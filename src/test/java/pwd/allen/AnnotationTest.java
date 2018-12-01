@@ -38,8 +38,11 @@ public class AnnotationTest {
 //        myService.print("潘伟丹");
         /** AOP test end **/
 
-        PersonService personService = applicationContext.getBean(PersonService.class);
-        System.out.println("insert:" + personService.insertUser());
+        /** test transaction aop begin **/
+//        PersonService personService = applicationContext.getBean(PersonService.class);
+//        System.out.println("insert:" + personService.insertUser());
+        /** test transaction aop end **/
+
     }
 
 
