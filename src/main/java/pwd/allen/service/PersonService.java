@@ -3,6 +3,7 @@ package pwd.allen.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pwd.allen.annotation.MyAnnotation;
 import pwd.allen.dao.PersonDao;
 import pwd.allen.entity.Person;
 
@@ -19,6 +20,7 @@ public class PersonService {
     PersonDao personDao;
 
     @Transactional
+    @MyAnnotation
     public int insertUser() {
         int result = 0;
         Person person = new Person();

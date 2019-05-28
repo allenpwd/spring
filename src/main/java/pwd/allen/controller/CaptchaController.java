@@ -29,6 +29,7 @@ import java.util.List;
 @RequestMapping("/help")
 public class CaptchaController {
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     Producer captchaProducer;
 

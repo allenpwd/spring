@@ -22,7 +22,7 @@ public class AnnotationTest {
     }
 
     @After
-    public void destory() {
+    public void destroy() {
         applicationContext.close();
     }
 

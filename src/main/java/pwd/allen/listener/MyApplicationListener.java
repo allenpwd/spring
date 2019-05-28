@@ -2,6 +2,7 @@ package pwd.allen.listener;
 
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,7 +18,9 @@ public class MyApplicationListener implements ApplicationListener<ApplicationEve
      *  1）、容器创建对象、refresh()
      *  2）、finishRefresh();容器刷新完成
      *  3）、publishEvent(new ContextRefreshedEvent(this));
-     *      事件发布流程：
+     * 2）自己发布事件
+     *
+     * 事件发布流程：
      *          1）获取事件的派发器：getApplicationEventMulticaster()
      *          2）multicastEvent派发事件
      *          3）获取所有ApplicationListener;如果有Executor,可以支持使用Executor进行异步派发，否则同步派发
@@ -26,6 +29,11 @@ public class MyApplicationListener implements ApplicationListener<ApplicationEve
      */
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
-        System.out.println("接受事件：" + event);
+        System.out.println("ApplicationListener接口实现接受事件：" + event);
+    }
+
+    @EventListener(classes = {ApplicationEvent.class})
+    public void myEventListenerMethod(ApplicationEvent event) {
+        System.out.println("@EventListener接收事件：" + event);
     }
 }

@@ -36,7 +36,11 @@ public class MyAspect {
     @Pointcut(value = "execution(public void pwd.allen.service.MyService.*(..))")
     public void myPointCut() {}
 
-    @Before("myPointCut()")
+    //抽取公共的切入点表达式
+    @Pointcut(value = "@annotation(pwd.allen.annotation.MyAnnotation)")
+    public void myAnnocationPointCut() {}
+
+    @Before("myPointCut() || myAnnocationPointCut()")
     public void before(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         System.out.println("【@Before】" + joinPoint.getSignature().getName()
