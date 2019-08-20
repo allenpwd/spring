@@ -19,7 +19,7 @@ import java.util.Arrays;
  * @create 2018-12-01 16:36
  **/
 @Component
-public class MyBeanDefinitionRegistryPostProcessor implements BeanFactoryPostProcessor {
+public class MyBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegistryPostProcessor {
 
     /**
      * BeanFactoryPostProcessor接口的方法
@@ -37,7 +37,7 @@ public class MyBeanDefinitionRegistryPostProcessor implements BeanFactoryPostPro
      */
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        System.out.println("BeanFactoryPostProcessor.postProcessBeanFactory");
+        System.out.println("【BeanFactoryPostProcessor.postProcessBeanFactory】");
         int beanDefinitionCount = beanFactory.getBeanDefinitionCount();
         String[] beanDefinitionNames = beanFactory.getBeanDefinitionNames();
         System.out.println("bean数量:" + beanDefinitionCount);
@@ -60,7 +60,7 @@ public class MyBeanDefinitionRegistryPostProcessor implements BeanFactoryPostPro
      */
     //@Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-        System.out.println("BeanDefinitionRegistryPostProcessor.postProcessBeanDefinitionRegistry");
+        System.out.println("【BeanDefinitionRegistryPostProcessor.postProcessBeanDefinitionRegistry】");
         System.out.println("bean数量：" + registry.getBeanDefinitionCount());
 
         /**注册beanDefinition begin **/
