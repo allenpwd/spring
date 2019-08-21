@@ -19,19 +19,14 @@ import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 import java.util.Date;
 
-/**
- * 声明式事务
- */
-@EnableTransactionManagement
-/**
- * 注册AnnotationAwareAspectJAutoProxyCreator
- */
-@EnableAspectJAutoProxy
-@PropertySource(value = {"classpath:/my.properies"}, encoding = "UTF-8")
+@EnableTransactionManagement    //声明式事务
+@EnableAspectJAutoProxy     //注册AnnotationAwareAspectJAutoProxyCreator
+@PropertySource(value = {"classpath:/my.properies"}, encoding = "UTF-8")    //加载指定的配置文件
 @Configuration
 @ComponentScan(value = {"pwd.allen"},
         excludeFilters = {@ComponentScan.Filter(type=FilterType.ANNOTATION, value={Controller.class})})
 @Import({MyService.class, MyImportSelector.class, MyImportBeanDefinitionRegistrar.class})
+@ImportResource({"classpath:bean.xml"})     //导入Spring的XML配置文件
 public class MainConfig {
 
     @Conditional({MyCondition.class})

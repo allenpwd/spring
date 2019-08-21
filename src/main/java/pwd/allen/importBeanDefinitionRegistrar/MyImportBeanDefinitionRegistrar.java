@@ -9,6 +9,9 @@ import pwd.allen.entity.Customer;
 import pwd.allen.entity.Person;
 
 /**
+ * 执行时机：在Beanfactory标准初始化之后，执行BeanFactory后置处理器的时候
+ * ConfigurationClassPostProcessor（实现了BeanDefinitionRegistryPostProcessor）的postProcessBeanDefinitionRegistry方法
+ *
  * @author pwd
  * @create 2018-11-11 14:31
  **/
