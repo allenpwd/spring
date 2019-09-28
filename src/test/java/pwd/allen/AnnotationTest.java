@@ -36,6 +36,8 @@ public class AnnotationTest {
         /** AOP test begin **/
 //        MyService myService = applicationContext.getBean(MyService.class);
 //        myService.print("潘伟丹");
+        MyService myService = applicationContext.getBean(MyService.class);
+        myService.printThree("潘伟丹");
         /** AOP test end **/
 
         /** test transaction aop begin **/

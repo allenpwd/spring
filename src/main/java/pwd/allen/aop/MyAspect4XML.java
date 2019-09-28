@@ -1,6 +1,5 @@
 package pwd.allen.aop;
 
-import jdk.nashorn.internal.runtime.regexp.JoniRegExp;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -29,19 +28,8 @@ import java.util.Arrays;
  * @author pwd
  * @create 2018-11-22 23:31
  **/
-@Component
-@Aspect
-public class MyAspect {
+public class MyAspect4XML {
 
-    //抽取公共的切入点表达式
-    @Pointcut(value = "execution(public void pwd.allen.service.My*.*One(..))")
-    public void myPointCut() {}
-
-    //抽取公共的切入点表达式
-    @Pointcut(value = "@annotation(pwd.allen.annotation.MyAnnotation)")
-    public void myAnnocationPointCut() {}
-
-    @Before("myPointCut() || myAnnocationPointCut()")
     public void before(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         System.out.println("【@Before】" + joinPoint.getTarget().getClass().getName()
@@ -53,7 +41,6 @@ public class MyAspect {
      * 业务逻辑退出后（包括正常执行结束和异常退出），执行
      * @param joinPoint
      */
-    @After("myPointCut()")
     public void after(JoinPoint joinPoint) {
         System.out.println("【@After】" + joinPoint.getTarget().getClass().getName()
                 + "." +joinPoint.getSignature().getName());
@@ -68,7 +55,6 @@ public class MyAspect {
      * @return
      * @throws Throwable
      */
-    @Around("myPointCut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         System.out.println("【@Around】" + joinPoint.getTarget().getClass().getName()
                 + "." +joinPoint.getSignature().getName());
@@ -81,7 +67,6 @@ public class MyAspect {
      * @param joinPoint
      * @param e
      */
-    @AfterThrowing(value="myPointCut()", throwing = "e")
     public void afterThrowing(JoinPoint joinPoint, Throwable e) {
         System.out.println("【@afterThrowing】" + joinPoint.getTarget().getClass().getName()
                 + "." +joinPoint.getSignature().getName()
@@ -93,7 +78,6 @@ public class MyAspect {
      * @param joinPoint
      * @param result
      */
-    @AfterReturning(value="myPointCut()", returning = "result")
     public void afterReturning(JoinPoint joinPoint, Object result) {
         System.out.println("【@afterReturning】" + joinPoint.getTarget().getClass().getName()
                 + "." +joinPoint.getSignature().getName() + "--返回值：" + result);

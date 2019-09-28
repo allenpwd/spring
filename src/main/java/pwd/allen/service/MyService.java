@@ -2,6 +2,7 @@ package pwd.allen.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pwd.allen.annotation.MyAnnotation;
 import pwd.allen.entity.Fruit;
 
 /**
@@ -12,8 +13,17 @@ public class MyService {
     @Autowired
     private Fruit fruit;
 
-    public void print(String name) {
+    public void printOne(String name) {
         System.out.println("hello!" + name);
         //throw new RuntimeException("出错了");
+    }
+
+    public void printTwo(String name) {
+        System.out.println("hello!" + name);
+    }
+
+    @MyAnnotation
+    public void printThree(String name) {
+        System.out.println("hello!" + name);
     }
 }
