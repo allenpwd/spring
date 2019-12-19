@@ -2,25 +2,11 @@ package pwd.allen.aop;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
-import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
 /**切面类
- * AOP 在程序运行期间动态的将某段代码切入到指定方法指定位置进行运行的编程方式；
- * 通知方法
- *      前置通知@Before：在目标方法运行之前运行
- *      后置通知@After：在目标方法运行之后运行
- *      返回通知@AfterReturning：在目标方法正常返回后运行
- *      异常通知@AfterThrowing：在目标方法出现异常后运行
- *      环绕通知@Around：动态代理，手动推动目标方法运行joinPoint.procced()
- *
- * 步骤
- * 1.导入aop模块；Spring AOP(spring-aspects)
- * 2.将切面类和业务逻辑类（目标方法所在类）都加入到容器中；
- * 3.必须告诉Spring哪个类是切面类（给切面类上加一个注解：@Aspect）
- * 4.给配置类中加@EnableAspectJAutoProxy（开启基于注解的Aop模式）
+ * XML的形式配置Aspect
  *
  * 注意
  * 1.通知方法可以定义JoinPoint（org.aspectj.lang.JoinPoint，别和org.aopalliance.intercept.Joinpoint混淆）参数，这个参数必须作为第一个参数，否则报错【error at ::0 formal unbound in pointcut】
@@ -32,9 +18,11 @@ public class MyAspect4XML {
 
     public void before(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
-        System.out.println("【@Before】" + joinPoint.getTarget().getClass().getName()
-                + "." +joinPoint.getSignature().getName()
-                + "--参数：" + Arrays.asList(args));
+
+        String format = String.format("【%s-Before】%s.%s--参数：%s", this.getClass().getName()
+                , joinPoint.getTarget().getClass().getName()
+                , joinPoint.getSignature().getName(), Arrays.asList(args));
+        System.out.println(format);
     }
 
     /**
@@ -42,8 +30,10 @@ public class MyAspect4XML {
      * @param joinPoint
      */
     public void after(JoinPoint joinPoint) {
-        System.out.println("【@After】" + joinPoint.getTarget().getClass().getName()
-                + "." +joinPoint.getSignature().getName());
+        String format = String.format("【%s-After】%s.%s", this.getClass().getName()
+                , joinPoint.getTarget().getClass().getName()
+                , joinPoint.getSignature().getName());
+        System.out.println(format);
     }
 
     /**
@@ -56,8 +46,10 @@ public class MyAspect4XML {
      * @throws Throwable
      */
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
-        System.out.println("【@Around】" + joinPoint.getTarget().getClass().getName()
-                + "." +joinPoint.getSignature().getName());
+        String format = String.format("【%s-Around】%s.%s", this.getClass().getName()
+                , joinPoint.getTarget().getClass().getName()
+                , joinPoint.getSignature().getName());
+        System.out.println(format);
         Object rel = joinPoint.proceed();
         return rel;
     }
@@ -68,9 +60,10 @@ public class MyAspect4XML {
      * @param e
      */
     public void afterThrowing(JoinPoint joinPoint, Throwable e) {
-        System.out.println("【@afterThrowing】" + joinPoint.getTarget().getClass().getName()
-                + "." +joinPoint.getSignature().getName()
-        + "--异常：" + e.getMessage());
+        String format = String.format("【%s-afterThrowing】%s.%s--异常：%s", this.getClass().getName()
+                , joinPoint.getTarget().getClass().getName()
+                , joinPoint.getSignature().getName(), e.getMessage());
+        System.out.println(format);
     }
 
     /**
@@ -79,7 +72,9 @@ public class MyAspect4XML {
      * @param result
      */
     public void afterReturning(JoinPoint joinPoint, Object result) {
-        System.out.println("【@afterReturning】" + joinPoint.getTarget().getClass().getName()
-                + "." +joinPoint.getSignature().getName() + "--返回值：" + result);
+        String format = String.format("【%s-afterReturning】%s.%s--返回值：%s", this.getClass().getName()
+                , joinPoint.getTarget().getClass().getName()
+                , joinPoint.getSignature().getName(), result);
+        System.out.println(format);
     }
 }

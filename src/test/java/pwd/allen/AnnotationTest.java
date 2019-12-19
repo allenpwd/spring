@@ -1,13 +1,11 @@
 package pwd.allen;
 
-import org.junit.*;
-import org.springframework.context.ApplicationContext;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import pwd.allen.annotation.MainConfig;
-import pwd.allen.entity.Fruit;
-import pwd.allen.entity.Person;
+import pwd.allen.config.MainConfig;
 import pwd.allen.service.MyService;
-import pwd.allen.service.PersonService;
 
 /**
  * @author pwd
@@ -28,17 +26,15 @@ public class AnnotationTest {
 
     @Test
     public void test() {
-        printAllBean(applicationContext);
 //        Fruit fruit = (Fruit) applicationContext.getBean("fruit");
 //        Person person = applicationContext.getBean(Person.class);
 //        System.out.println(person);
 
-        /** AOP test begin **/
-//        MyService myService = applicationContext.getBean(MyService.class);
-//        myService.print("潘伟丹");
+        //region 测试AOP
         MyService myService = applicationContext.getBean(MyService.class);
-        myService.printThree("潘伟丹");
-        /** AOP test end **/
+//        myService.print("潘伟丹");
+        myService.printTwo("潘伟丹");
+        //endregion
 
         /** test transaction aop begin **/
 //        PersonService personService = applicationContext.getBean(PersonService.class);
@@ -48,7 +44,8 @@ public class AnnotationTest {
     }
 
 
-    public static void printAllBean(ApplicationContext applicationContext) {
+    @Test
+    public void printAllBean() {
         System.out.println("------------------printAllBean begin------------------");
         for (String beanName : applicationContext.getBeanDefinitionNames()) {
             System.out.println(beanName);

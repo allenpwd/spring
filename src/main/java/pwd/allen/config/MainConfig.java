@@ -1,4 +1,4 @@
-package pwd.allen.annotation;
+package pwd.allen.config;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.aspectj.lang.annotation.Aspect;
@@ -19,14 +19,16 @@ import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 import java.util.Date;
 
-@EnableTransactionManagement    //声明式事务
-@EnableAspectJAutoProxy     //注册AnnotationAwareAspectJAutoProxyCreator
-@PropertySource(value = {"classpath:/my.properies"}, encoding = "UTF-8")    //加载指定的配置文件
-@Configuration
+@EnableTransactionManagement//声明式事务
+@EnableAspectJAutoProxy//注册AnnotationAwareAspectJAutoProxyCreator
+@PropertySource(value = {"classpath:/my.properies"}, encoding = "UTF-8")//加载指定的配置文件
 @ComponentScan(value = {"pwd.allen"},
-        excludeFilters = {@ComponentScan.Filter(type=FilterType.ANNOTATION, value={Controller.class})})
+        excludeFilters = {
+            @ComponentScan.Filter(type=FilterType.ANNOTATION, value={Controller.class})
+        })//自动扫描pwd.allen目录下的组件，并排除@Controller标注的
 @Import({MyService.class, MyImportSelector.class, MyImportBeanDefinitionRegistrar.class})
-@ImportResource({"classpath:bean.xml"})     //导入Spring的XML配置文件
+@ImportResource({"classpath:bean.xml"})//导入Spring的XML配置文件 可参考ConfigurationClassBeanDefinitionReader的loadBeanDefinitionsFromImportedResources方法
+@Configuration
 public class MainConfig {
 
     @Conditional({MyCondition.class})
