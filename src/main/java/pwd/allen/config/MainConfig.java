@@ -26,7 +26,7 @@ import java.util.Date;
         excludeFilters = {
             @ComponentScan.Filter(type=FilterType.ANNOTATION, value={Controller.class})
         })//自动扫描pwd.allen目录下的组件，并排除@Controller标注的
-@Import({MyService.class, MyImportSelector.class, MyImportBeanDefinitionRegistrar.class})
+@Import({MyService.class, MyImportSelector.class})
 @ImportResource({"classpath:bean.xml"})//导入Spring的XML配置文件 可参考ConfigurationClassBeanDefinitionReader的loadBeanDefinitionsFromImportedResources方法
 @Configuration
 public class MainConfig {
