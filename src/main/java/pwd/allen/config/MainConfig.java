@@ -8,6 +8,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import pwd.allen.annotation.MyQualifier;
 import pwd.allen.aop.MyAspect;
 import pwd.allen.condition.MyCondition;
 import pwd.allen.entity.Fruit;
@@ -40,6 +41,16 @@ public class MainConfig {
         fruit.setName("猕猴桃");
         return fruit;
     }
+
+//    @MyQualifier
+//    @Bean
+//    public Fruit fruit2() {
+//        System.out.println("创建第二个fruit实例");
+//        Fruit fruit = new Fruit();
+//        fruit.setCreateAt(new Date());
+//        fruit.setName("番茄");
+//        return fruit;
+//    }
 
     @Bean
     public DataSource dataSource() throws Exception {
