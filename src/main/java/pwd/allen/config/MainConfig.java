@@ -2,6 +2,7 @@ package pwd.allen.config;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -42,15 +43,15 @@ public class MainConfig {
         return fruit;
     }
 
-//    @MyQualifier
-//    @Bean
-//    public Fruit fruit2() {
-//        System.out.println("创建第二个fruit实例");
-//        Fruit fruit = new Fruit();
-//        fruit.setCreateAt(new Date());
-//        fruit.setName("番茄");
-//        return fruit;
-//    }
+    @Qualifier("fruit")
+    @Bean
+    public Fruit fruit2() {
+        System.out.println("创建第二个fruit实例");
+        Fruit fruit = new Fruit();
+        fruit.setCreateAt(new Date());
+        fruit.setName("番茄");
+        return fruit;
+    }
 
     @Bean
     public DataSource dataSource() throws Exception {

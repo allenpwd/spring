@@ -1,5 +1,6 @@
 package pwd.allen.entity;
 
+import lombok.Data;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.SmartInitializingSingleton;
@@ -21,35 +22,14 @@ import java.util.Date;
  * @author pwd
  * @create 2018-08-11 21:05
  **/
+@Data
 public class Fruit implements InitializingBean, DisposableBean, SmartInitializingSingleton {
 
-    @Value("苹果")
     private String name;
+    @Value("12")
+    private Float price;
     private Date createAt;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Date getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
-    }
-
-    @Override
-    public String toString() {
-        return "Fruit{" +
-                "name='" + name + '\'' +
-                ", createAt=" + createAt +
-                '}';
-    }
 
     public void init() {
         System.out.println("@Bean init-method属性指定初始化方法");
