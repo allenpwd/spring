@@ -2,15 +2,12 @@ package pwd.allen.processor;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.stereotype.Component;
-import pwd.allen.entity.Fruit;
-import pwd.allen.util.CopyUtils;
+import pwd.allen.entity.Person;
 
 import java.util.Arrays;
 
@@ -65,10 +62,10 @@ public class MyBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegi
 
         /**注册beanDefinition begin **/
         //方法一
-        BeanDefinition beanDefinition = new RootBeanDefinition(CopyUtils.class);
+        BeanDefinition beanDefinition = new RootBeanDefinition(Person.class);
         //方法二
-        //beanDefinition = BeanDefinitionBuilder.genericBeanDefinition(CopyUtils.class).getBeanDefinition();
-        registry.registerBeanDefinition("copyUtil", beanDefinition);
+        //beanDefinition = BeanDefinitionBuilder.genericBeanDefinition(Person.class).getBeanDefinition();
+        registry.registerBeanDefinition("person", beanDefinition);
         /**注册beanDefinition end **/
     }
 }

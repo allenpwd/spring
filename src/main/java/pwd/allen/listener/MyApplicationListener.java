@@ -32,6 +32,14 @@ public class MyApplicationListener implements ApplicationListener<ApplicationEve
         System.out.println("ApplicationListener接口实现接受事件：" + event);
     }
 
+    /**
+     * 演示使用 {@link EventListener}注解监听事件
+     * 原理：
+     *  使用 {@link org.springframework.context.event.EventListenerMethodProcessor}处理器来解析方法上的@EventListener
+     *  该处理器实现了 {@link org.springframework.beans.factory.SmartInitializingSingleton}接口，会在所有单例创建后执行，
+     *
+     * @param event
+     */
     @EventListener(classes = {ApplicationEvent.class})
     public void myEventListenerMethod(ApplicationEvent event) {
         System.out.println("@EventListener接收事件：" + event);

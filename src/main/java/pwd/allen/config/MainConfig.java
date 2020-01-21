@@ -18,6 +18,7 @@ import pwd.allen.importSelector.MyImportSelector;
 import pwd.allen.service.MyService;
 
 import javax.sql.DataSource;
+import java.beans.ConstructorProperties;
 import java.beans.PropertyVetoException;
 import java.util.Date;
 
@@ -55,11 +56,14 @@ public class MainConfig {
 
     @Bean
     public DataSource dataSource() throws Exception {
+        String jdbcUrl = "jdbc:mysql://127.0.0.1:3306/test";
+        String password = "123456";
+
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
         dataSource.setUser("root");
-        dataSource.setPassword("123");
+        dataSource.setPassword(password);
         dataSource.setDriverClass("com.mysql.jdbc.Driver");
-        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3307/test");
+        dataSource.setJdbcUrl(jdbcUrl);
         dataSource.setLoginTimeout(5);
         dataSource.setUnreturnedConnectionTimeout(5);
         return dataSource;

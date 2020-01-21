@@ -7,7 +7,7 @@ import org.springframework.core.type.AnnotationMetadata;
  * 返回需要导入的组件
  *
  * 执行时机：在Beanfactory标准初始化之后，执行BeanFactory后置处理器的时候
- *  * ConfigurationClassPostProcessor（实现了BeanDefinitionRegistryPostProcessor）的postProcessBeanDefinitionRegistry方法
+ *  * {@link org.springframework.context.annotation.ConfigurationClassPostProcessor}（实现了BeanDefinitionRegistryPostProcessor）的postProcessBeanDefinitionRegistry方法
  *
  * @author pwd
  * @create 2018-11-11 14:16
