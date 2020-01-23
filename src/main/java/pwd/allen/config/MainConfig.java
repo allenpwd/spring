@@ -3,6 +3,7 @@ package pwd.allen.config;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -13,6 +14,7 @@ import pwd.allen.annotation.MyQualifier;
 import pwd.allen.aop.MyAspect;
 import pwd.allen.condition.MyCondition;
 import pwd.allen.entity.Fruit;
+import pwd.allen.entity.Person;
 import pwd.allen.importBeanDefinitionRegistrar.MyImportBeanDefinitionRegistrar;
 import pwd.allen.importSelector.MyImportSelector;
 import pwd.allen.service.MyService;
@@ -35,7 +37,7 @@ import java.util.Date;
 public class MainConfig {
 
     @Conditional({MyCondition.class})
-    @Bean(value = "fruit", initMethod = "init")
+    @Bean(value = "fruit", initMethod = "init", destroyMethod = "destroy")
     public Fruit fruit() {
         System.out.println("创建fruit实例");
         Fruit fruit = new Fruit();
@@ -77,7 +79,7 @@ public class MainConfig {
 
     @Bean
     public PlatformTransactionManager dataSourceTransactionManager() throws Exception {
-        return  new DataSourceTransactionManager(dataSource());
+        return new DataSourceTransactionManager(dataSource());
     }
 
 }

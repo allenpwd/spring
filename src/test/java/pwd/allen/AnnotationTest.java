@@ -5,7 +5,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import pwd.allen.config.MainConfig;
+import pwd.allen.entity.Customer;
+import pwd.allen.entity.Fruit;
+import pwd.allen.entity.Person;
+import pwd.allen.service.LookUpService;
 import pwd.allen.service.MyService;
+
+import java.time.Period;
 
 /**
  * @author pwd
@@ -25,10 +31,10 @@ public class AnnotationTest {
     }
 
     @Test
-    public void test() {
-//        Fruit fruit = (Fruit) applicationContext.getBean("fruit");
-//        Person person = applicationContext.getBean(Person.class);
-//        System.out.println(person);
+    public void testOne() {
+        Fruit fruit = (Fruit) applicationContext.getBean("fruit");
+        Person person = applicationContext.getBean(Person.class);
+        System.out.println(person);
 
         //region 测试AOP
         MyService myService = applicationContext.getBean(MyService.class);
@@ -43,6 +49,15 @@ public class AnnotationTest {
 
     }
 
+    /**
+     * 测试@Lookup动态改变bean实现
+     */
+    @Test
+    public void testLookup() {
+        LookUpService bean = applicationContext.getBean(LookUpService.class);
+        Fruit fruit = bean.getFruit();
+        System.out.println(fruit);
+    }
 
     @Test
     public void printAllBean() {

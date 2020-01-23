@@ -39,7 +39,7 @@ public class CaptchaController {
         // 将文本保存在session中。这里就使用包中的静态变量吧
         request.getSession().setAttribute(Constants.KAPTCHA_SESSION_KEY, capText);
 
-        BufferedImage bi = captchaProducer.createImage("潘伟丹"); // 创建带有文本的图片
+        BufferedImage bi = captchaProducer.createImage("李多海"); // 创建带有文本的图片
         ServletOutputStream out = response.getOutputStream();
         // 图片数据输出
         ImageIO.write(bi, "jpg", out);

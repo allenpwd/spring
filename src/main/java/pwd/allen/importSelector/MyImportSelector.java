@@ -22,6 +22,6 @@ public class MyImportSelector implements ImportSelector {
     @Override
     public String[] selectImports(AnnotationMetadata importingClassMetadata) {
 //        return new String[] {"pwd.allen.entity.Person", "pwd.allen.importBeanDefinitionRegistrar.MyImportBeanDefinitionRegistrar"};
-        return new String[] {"pwd.allen.entity.Person"};
+        return new String[] {"pwd.allen.entity.Customer"};
     }
 }

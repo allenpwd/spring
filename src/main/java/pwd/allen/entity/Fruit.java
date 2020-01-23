@@ -12,11 +12,16 @@ import java.util.Date;
 
 /**
  *
- * bean生命周期的几个回调方式的顺序：
+ * bean生命周期的几个回调方式的顺序（在所有必要依赖配置完成后）：
+ *   初始化：
  *      注解@PostConstruct标注的方法
- *      接口InitializingBean的实现方法afterPropertiesSet
+ *      接口InitializingBean的实现方法afterPropertiesSet（不推荐，因为代码与接口耦合）
  *      init-method属性指定的方法
- *      接口SmartInitializingSingleton的实现方法afterSingletonsInstantiated
+ *      接口SmartInitializingSingleton的实现方法afterSingletonsInstantiated（不推荐，因为代码与接口耦合）
+ *
+ *   销毁：
+ *      注解@PreDestroy标注的方法
+ *      接口DisposableBean的实现方法destroy（不推荐，因为代码与接口耦合）
  *
  *
  * @author pwd
@@ -29,7 +34,6 @@ public class Fruit implements InitializingBean, DisposableBean, SmartInitializin
     @Value("12")
     private Float price;
     private Date createAt;
-
 
     public void init() {
         System.out.println("@Bean init-method属性指定初始化方法");
