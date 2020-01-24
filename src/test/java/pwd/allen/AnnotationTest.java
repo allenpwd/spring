@@ -3,6 +3,7 @@ package pwd.allen;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.LifecycleProcessor;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import pwd.allen.config.MainConfig;
 import pwd.allen.entity.Customer;
@@ -35,6 +36,8 @@ public class AnnotationTest {
         Fruit fruit = (Fruit) applicationContext.getBean("fruit");
         Person person = applicationContext.getBean(Person.class);
         System.out.println(person);
+        LifecycleProcessor lifecycleProcessor = applicationContext.getBean(LifecycleProcessor.class);
+        System.out.println(lifecycleProcessor);
 
         //region 测试AOP
         MyService myService = applicationContext.getBean(MyService.class);
