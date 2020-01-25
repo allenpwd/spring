@@ -7,6 +7,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 /**
+ *
+ * 自定义条件：操作系统是window的话返回true
  * @author pwd
  * @create 2018-11-17 8:38
  **/

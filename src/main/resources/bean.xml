@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:property-placeholder location="classpath:db.properies" system-properties-mode="FALLBACK"/>
+    <!--
+        ENVIRONMENT：将使用Spring 3.1提供的PropertySourcesPlaceholderConfigurer，其他情况使用Spring 3.1之前的PropertyPlaceholderConfigurer
+        OVERRIDE： PropertyPlaceholderConfigurer使用，因为在spring 3.1之前版本是没有Enviroment的，所以OVERRIDE是spring 3.1之前版本的Environment
+        NEVER：只查找properties-ref、location
+    -->
+    <context:property-placeholder location="classpath:db.properies" system-properties-mode="ENVIRONMENT"/>
 
+    <!--bean工厂方式创建实例-->
     <bean id="myFactoryBeanFromXML" class="pwd.allen.factoryBean.MyFactoryBean">
+    </bean>
+
+    <bean id="fruit" class="pwd.allen.entity.Fruit" p:name="${user.dir}">
+        <property name="price" value="40"/>
     </bean>
 
     <bean id="myImportBeanDefinitionRegistrar" class="pwd.allen.importBeanDefinitionRegistrar.MyImportBeanDefinitionRegistrar"></bean>

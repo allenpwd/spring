@@ -3,16 +3,15 @@ package pwd.allen;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.config.EmbeddedValueResolver;
 import org.springframework.context.LifecycleProcessor;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.util.StringValueResolver;
 import pwd.allen.config.MainConfig;
-import pwd.allen.entity.Customer;
 import pwd.allen.entity.Fruit;
 import pwd.allen.entity.Person;
 import pwd.allen.service.LookUpService;
 import pwd.allen.service.MyService;
-
-import java.time.Period;
 
 /**
  * @author pwd
@@ -60,6 +59,12 @@ public class AnnotationTest {
         LookUpService bean = applicationContext.getBean(LookUpService.class);
         Fruit fruit = bean.getFruit();
         System.out.println(fruit);
+    }
+
+    @Test
+    public void other() {
+        StringValueResolver bean = applicationContext.getBean(StringValueResolver.class);
+        System.out.println(bean.resolveStringValue("${jdbc.url}${os.name}"));
     }
 
     @Test
