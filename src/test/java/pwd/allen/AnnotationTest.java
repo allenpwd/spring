@@ -63,8 +63,13 @@ public class AnnotationTest {
 
     @Test
     public void other() {
-        StringValueResolver bean = applicationContext.getBean(StringValueResolver.class);
-        System.out.println(bean.resolveStringValue("${jdbc.url}${os.name}"));
+        String str = "#{'os.name=${os.name}'} ${jdbc.url} #{12+35}";
+
+        //使用beanFactory解析属性中的占位符
+        System.out.println(applicationContext.getBeanFactory().resolveEmbeddedValue(str));
+
+        //EmbeddedValueResolver解析属性中的占位符和spel表达式，先使用beanFactory解析占位符，再使用BeanExpressionResolver解析spel表达式
+        System.out.println(applicationContext.getBean(MyService.class).resolveValue(str));
     }
 
     @Test

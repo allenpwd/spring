@@ -26,6 +26,8 @@ public class MyService implements EmbeddedValueResolverAware {
     @Autowired
     private List<Fruit> fruits;
 
+    private StringValueResolver valueResolver;
+
     public void printOne(String name) {
         System.out.println("hello!" + name);
         //throw new RuntimeException("出错了");
@@ -42,6 +44,10 @@ public class MyService implements EmbeddedValueResolverAware {
 
     @Override
     public void setEmbeddedValueResolver(StringValueResolver resolver) {
-        System.out.println(resolver.resolveStringValue("${os.name}"));
+        this.valueResolver = resolver;
+    }
+
+    public String resolveValue(String value) {
+        return valueResolver.resolveStringValue(value);
     }
 }
