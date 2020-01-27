@@ -25,7 +25,7 @@ import java.beans.PropertyVetoException;
 import java.util.Date;
 
 @EnableTransactionManagement//声明式事务
-@EnableAspectJAutoProxy//注册AnnotationAwareAspectJAutoProxyCreator
+@EnableAspectJAutoProxy//注册AnnotationAwareAspectJAutoProxyCreator，没有的话@Aspect标注的AOP类无法生效
 @PropertySource(value = {"classpath:/my.properies"}, encoding = "UTF-8")//加载指定的配置文件
 //自动扫描pwd.allen目录下的组件，并排除@Controller标注的
 @ComponentScan(value = {"pwd.allen"},
@@ -38,9 +38,11 @@ import java.util.Date;
 @Configuration
 public class MainConfig {
 
+//    @Primary//Primary只能标注一个，否则报错：more than one 'primary' bean found among candidates
     @Qualifier("fruit")//加上这个的话会被MyService的fruits自动注入
     @Conditional({MyCondition.class})
     @Bean(initMethod = "init", destroyMethod = "destroy")
+    @Description("bean注解创建fruit实例")
     public Fruit fruitFromAnnotation() {
         System.out.println("bean注解创建fruit实例");
         Fruit fruit = new Fruit();

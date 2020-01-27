@@ -1,6 +1,5 @@
 package pwd.allen.aop;
 
-import jdk.nashorn.internal.runtime.regexp.JoniRegExp;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -24,7 +23,8 @@ import java.util.Arrays;
  * 4.给配置类中加@EnableAspectJAutoProxy（开启基于注解的Aop模式）
  *
  * 注意
- * 1.通知方法可以定义JoinPoint（org.aspectj.lang.JoinPoint，别和org.aopalliance.intercept.Joinpoint混淆）参数，这个参数必须作为第一个参数，否则报错【error at ::0 formal unbound in pointcut】
+ * 1.通知方法可以定义JoinPoint（org.aspectj.lang.JoinPoint，别和org.aopalliance.intercept.Joinpoint混淆）参数
+ *  这个参数必须作为第一个参数，否则报错【error at ::0 formal unbound in pointcut】
  * 2.通知注解一定要有value，否则报错【Must set property 'expression' before attempting to match】
  * @author pwd
  * @create 2018-11-22 23:31
@@ -33,11 +33,15 @@ import java.util.Arrays;
 @Aspect
 public class MyAspect {
 
-    //抽取公共的切入点表达式
+    /**
+     * 设置切入点表达式：pwd.allen.service包下-》My开头的类-》One结尾的所有方法
+     */
     @Pointcut(value = "execution(public void pwd.allen.service.My*.*One(..))")
     public void myPointCut() {}
 
-    //抽取公共的切入点表达式
+    /**
+     * 设置切入点表达式：bean容器中@MyAnnotation标注的所有方法
+     */
     @Pointcut(value = "@annotation(pwd.allen.annotation.MyAnnotation)")
     public void myAnnocationPointCut() {}
 

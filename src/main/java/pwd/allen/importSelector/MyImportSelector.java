@@ -3,6 +3,8 @@ package pwd.allen.importSelector;
 import org.springframework.context.annotation.ImportSelector;
 import org.springframework.core.type.AnnotationMetadata;
 
+import java.util.ArrayList;
+
 /**
  * 返回需要导入的组件
  *
@@ -21,7 +23,8 @@ public class MyImportSelector implements ImportSelector {
      */
     @Override
     public String[] selectImports(AnnotationMetadata importingClassMetadata) {
-//        return new String[] {"pwd.allen.entity.Person", "pwd.allen.importBeanDefinitionRegistrar.MyImportBeanDefinitionRegistrar"};
-        return new String[] {"pwd.allen.entity.Customer"};
+        ArrayList<String> classes = new ArrayList<>();
+        classes.add("pwd.allen.importBeanDefinitionRegistrar.MyImportBeanDefinitionRegistrar");
+        return classes.toArray(new String[classes.size()]);
     }
 }

@@ -23,6 +23,7 @@ import pwd.allen.entity.Customer;
 public class MyImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
 
     /**
+     *  如果有fruit的beanDifinition则注册customer这个beanDifinition
      *
      * @param importingClassMetadata 导入当前类的配置类的注解元数据
      * @param registry  BeanDefinition注册类，通过registerBeanDefinition方法注册
@@ -33,7 +34,7 @@ public class MyImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegi
         boolean fruit = registry.containsBeanDefinition("fruit");
         if (fruit) {
             RootBeanDefinition beanDefinition = new RootBeanDefinition(Customer.class);
-            registry.registerBeanDefinition("myCustomer", beanDefinition);
+            registry.registerBeanDefinition("customer", beanDefinition);
         }
     }
 }

@@ -9,6 +9,7 @@ import pwd.allen.annotation.MyAnnotation;
 import pwd.allen.annotation.MyQualifier;
 import pwd.allen.entity.Fruit;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -25,6 +26,13 @@ public class MyService implements EmbeddedValueResolverAware {
     @MyQualifier
     @Autowired
     private List<Fruit> fruits;
+
+    /**
+     * @Resource JSR-250注解，name属性指定要注入的bean的名称，若name没有指定，则默认为字段名称（标注在字段上）、或者方法传参的参数名（标注在setter方法上）
+     * @see org.springframework.context.annotation.CommonAnnotationBeanPostProcessor
+     */
+    @Resource(name = "fruitFromAnnotation")
+    private Fruit fruit;
 
     private StringValueResolver valueResolver;
 
@@ -49,5 +57,13 @@ public class MyService implements EmbeddedValueResolverAware {
 
     public String resolveValue(String value) {
         return valueResolver.resolveStringValue(value);
+    }
+
+    public List<Fruit> getFruits() {
+        return fruits;
+    }
+
+    public Fruit getFruit() {
+        return fruit;
     }
 }

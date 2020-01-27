@@ -15,11 +15,21 @@
     <bean id="myFactoryBeanFromXML" class="pwd.allen.factoryBean.MyFactoryBean">
     </bean>
 
-    <bean id="fruit" class="pwd.allen.entity.Fruit" p:name="${user.dir}">
+    <bean id="fruit" class="pwd.allen.entity.Fruit" p:name="from xml:${user.dir} #{12+34}" primary="true" scope="prototype">
         <property name="price" value="40"/>
     </bean>
 
+    <!--ImportBeanDefinitionRegistrar通过xml注入的话它的registerBeanDefinitions方法不会被回调-->
     <bean id="myImportBeanDefinitionRegistrar" class="pwd.allen.importBeanDefinitionRegistrar.MyImportBeanDefinitionRegistrar"></bean>
+
+    <!--getFruit使用动态获取bean的方式，
+        methodReplacer替换myMethod方法（不推荐使用，返回结果类型要一致）
+    -->
+    <!--<bean id="replacer" class="pwd.allen.methodReplacer.MyMethodReplacer"/>-->
+    <!--<bean class="pwd.allen.service.LookUpService">-->
+        <!--<lookup-method name="getFruit" bean="fruit"/>-->
+        <!--<replaced-method name="myMethod" replacer="replacer"/>-->
+    <!--</bean>-->
 
     <!--xml配置的方式配置aspect aop-->
     <bean id="myAspect4XML" class="pwd.allen.aop.MyAspect4XML"/>

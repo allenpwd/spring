@@ -3,10 +3,8 @@ package pwd.allen;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.config.EmbeddedValueResolver;
 import org.springframework.context.LifecycleProcessor;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.util.StringValueResolver;
 import pwd.allen.config.MainConfig;
 import pwd.allen.entity.Fruit;
 import pwd.allen.entity.Person;
@@ -22,6 +20,7 @@ public class AnnotationTest {
 
     @Before
     public void init() {
+        //任意@Companent或JSR-330注解的类都可以作为构造方法的输入
         applicationContext = new AnnotationConfigApplicationContext(MainConfig.class);
     }
 
@@ -32,13 +31,13 @@ public class AnnotationTest {
 
     @Test
     public void testOne() {
-        Fruit fruit = (Fruit) applicationContext.getBean("fruit");
+        //如果有多个Fruit实例，获取标注了primary=true的那个
+        Fruit fruit = (Fruit) applicationContext.getBean(Fruit.class);
         Person person = applicationContext.getBean(Person.class);
         System.out.println(person);
-        LifecycleProcessor lifecycleProcessor = applicationContext.getBean(LifecycleProcessor.class);
-        System.out.println(lifecycleProcessor);
 
         //region 测试AOP
+        //这里拿到的bean是代理对象，看到的fruits属性可能是null，但是不代表被代理对象没有fruits
         MyService myService = applicationContext.getBean(MyService.class);
 //        myService.print("潘伟丹");
         myService.printTwo("潘伟丹");
@@ -52,13 +51,14 @@ public class AnnotationTest {
     }
 
     /**
-     * 测试@Lookup动态改变bean实现
+     * 测试@Lookup动态改变bean实现，每次调用都重新从bean容器中获取name为fruit的bean，若是prototype类型则每次都创建新的
      */
     @Test
     public void testLookup() {
         LookUpService bean = applicationContext.getBean(LookUpService.class);
         Fruit fruit = bean.getFruit();
         System.out.println(fruit);
+        System.out.println(bean.myMethod("测试replaced-method"));
     }
 
     @Test
