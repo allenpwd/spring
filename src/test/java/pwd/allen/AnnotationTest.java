@@ -3,13 +3,19 @@ package pwd.allen;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.LifecycleProcessor;
+import org.springframework.aop.aspectj.AspectJMethodBeforeAdvice;
+import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
+import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import pwd.allen.aop.MyAspect;
 import pwd.allen.config.MainConfig;
 import pwd.allen.entity.Fruit;
 import pwd.allen.entity.Person;
 import pwd.allen.service.LookUpService;
 import pwd.allen.service.MyService;
+
+import java.util.Locale;
 
 /**
  * @author pwd
@@ -36,18 +42,28 @@ public class AnnotationTest {
         Person person = applicationContext.getBean(Person.class);
         System.out.println(person);
 
-        //region 测试AOP
-        //这里拿到的bean是代理对象，看到的fruits属性可能是null，但是不代表被代理对象没有fruits
-        MyService myService = applicationContext.getBean(MyService.class);
-//        myService.print("潘伟丹");
-        myService.printTwo("潘伟丹");
-        //endregion
-
         /** test transaction aop begin **/
 //        PersonService personService = applicationContext.getBean(PersonService.class);
 //        System.out.println("insert:" + personService.insertUser());
         /** test transaction aop end **/
 
+    }
+
+    @Test
+    public void aop() {
+        //这里拿到的bean是代理对象，看到的fruits属性可能是null，但是不代表被代理对象没有fruits
+        MyService myService = applicationContext.getBean(MyService.class);
+        myService.printOne("allen");
+//        myService.printTwo("allen");
+
+        //模拟aop TODO 有问题：JoinPoint.getTarget()返回null
+        AspectJProxyFactory proxyFactory = new AspectJProxyFactory(new MyService());
+        proxyFactory.addAspect(MyAspect.class);//添加切面类，该类必须有@Aspectj标注
+        proxyFactory.setExposeProxy(true);
+        proxyFactory.setProxyTargetClass(true);
+        proxyFactory.setTargetClass(MyService.class);
+        MyService myService1 = proxyFactory.getProxy();
+//        myService1.printOne("手动");
     }
 
     /**
@@ -62,14 +78,23 @@ public class AnnotationTest {
     }
 
     @Test
-    public void other() {
-        String str = "#{'os.name=${os.name}'} ${jdbc.url} #{12+35}";
+    public void resolveValue() {
+        String str = "#{'os.name=${os.name}'}\njdbc.url=${jdbc.url}\n算术:#{12+35}\n#{'fruit.name='+fruit.name}";
 
         //使用beanFactory解析属性中的占位符
         System.out.println(applicationContext.getBeanFactory().resolveEmbeddedValue(str));
 
         //EmbeddedValueResolver解析属性中的占位符和spel表达式，先使用beanFactory解析占位符，再使用BeanExpressionResolver解析spel表达式
         System.out.println(applicationContext.getBean(MyService.class).resolveValue(str));
+    }
+
+    @Test
+    public void messageSource() {
+        MessageSource messageSource = applicationContext;
+        String code = "pwd.allen.desc";
+        Object[] args = new Object[]{"胡闹", 30};
+        System.out.println(messageSource.getMessage(code, args, Locale.US));
+        System.out.println(messageSource.getMessage(code, args, Locale.SIMPLIFIED_CHINESE));
     }
 
     @Test

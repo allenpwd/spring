@@ -4,7 +4,9 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.*;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Controller;
@@ -24,8 +26,9 @@ import java.beans.ConstructorProperties;
 import java.beans.PropertyVetoException;
 import java.util.Date;
 
-@EnableTransactionManagement//声明式事务
-@EnableAspectJAutoProxy//注册AnnotationAwareAspectJAutoProxyCreator，没有的话@Aspect标注的AOP类无法生效
+//默认的profile是default，若没有设置profile则该配置类被激活
+//要激活的profile可通过
+@Profile("default")
 @PropertySource(value = {"classpath:/my.properies"}, encoding = "UTF-8")//加载指定的配置文件
 //自动扫描pwd.allen目录下的组件，并排除@Controller标注的
 @ComponentScan(value = {"pwd.allen"},
@@ -51,31 +54,17 @@ public class MainConfig {
         return fruit;
     }
 
-
+    /**
+     * 如果没有自己定义一个，容器会默认创建一个 {@link org.springframework.context.support.DelegatingMessageSource}
+     *
+     * 国际化
+     * @return
+     */
     @Bean
-    public DataSource dataSource() throws Exception {
-        String jdbcUrl = "jdbc:mysql://127.0.0.1:3306/test";
-        String password = "123456";
-
-        ComboPooledDataSource dataSource = new ComboPooledDataSource();
-        dataSource.setUser("root");
-        dataSource.setPassword(password);
-        dataSource.setDriverClass("com.mysql.jdbc.Driver");
-        dataSource.setJdbcUrl(jdbcUrl);
-        dataSource.setLoginTimeout(5);
-        dataSource.setUnreturnedConnectionTimeout(5);
-        return dataSource;
+    public MessageSource messageSource() {
+        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+        //指定类路径message目录下test这个资源包
+        messageSource.setBasename("message.test");
+        return messageSource;
     }
-
-    @Bean
-    public JdbcTemplate jdbcTemplate() throws Exception {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource());
-        return jdbcTemplate;
-    }
-
-    @Bean
-    public PlatformTransactionManager dataSourceTransactionManager() throws Exception {
-        return new DataSourceTransactionManager(dataSource());
-    }
-
 }

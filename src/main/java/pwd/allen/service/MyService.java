@@ -1,9 +1,7 @@
 package pwd.allen.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.EmbeddedValueResolverAware;
-import org.springframework.stereotype.Service;
 import org.springframework.util.StringValueResolver;
 import pwd.allen.annotation.MyAnnotation;
 import pwd.allen.annotation.MyQualifier;
@@ -37,12 +35,14 @@ public class MyService implements EmbeddedValueResolverAware {
     private StringValueResolver valueResolver;
 
     public void printOne(String name) {
-        System.out.println("hello!" + name);
-        //throw new RuntimeException("出错了");
+//        System.out.println("hello!" + name);
+        this.printThree(name);
+//        ((MyService) AopContext.currentProxy()).printThree(name);//在被代理方法里调用代理对象的方法，不推荐，因为依赖了AOP代码
     }
 
     public void printTwo(String name) {
-        System.out.println("hello!" + name);
+//        System.out.println("hello!" + name);
+        this.printThree(name);
     }
 
     @MyAnnotation

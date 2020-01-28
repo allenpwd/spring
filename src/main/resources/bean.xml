@@ -34,10 +34,9 @@
     <!--xml配置的方式配置aspect aop-->
     <bean id="myAspect4XML" class="pwd.allen.aop.MyAspect4XML"/>
     <aop:config>
+        <aop:pointcut id="myPointCut" expression="execution(public void pwd.allen.service.My*.*Two(..))"/>
+        <aop:pointcut id="myAnnocationPointCut" expression="@annotation(pwd.allen.annotation.MyAnnotation)"/>
         <aop:aspect id="aspect" ref="myAspect4XML">
-            <aop:pointcut id="myPointCut" expression="execution(public void pwd.allen.service.My*.*Two(..))"/>
-            <aop:pointcut id="myAnnocationPointCut" expression="@annotation(pwd.allen.annotation.MyAnnotation)"/>
-
             <aop:before method="before"  pointcut-ref="myPointCut"/>
             <aop:before method="before"  pointcut-ref="myAnnocationPointCut"/>
             <aop:after method="after"  pointcut-ref="myPointCut"/>

@@ -13,7 +13,7 @@ import pwd.allen.entity.Person;
 public class MyFactoryBean implements FactoryBean<Order> {
     public Order getObject() throws Exception {
         Order order = new Order();
-        order.setName("潘伟丹");
+        order.setName("pwd");
         return order;
     }
 

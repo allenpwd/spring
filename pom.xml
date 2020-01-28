@@ -20,8 +20,9 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
-      <version>4.3.11.RELEASE</version>
+      <version>${spring.version}</version>
     </dependency>
+    
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-aspects</artifactId>
@@ -135,7 +136,7 @@
         <!-- 扫描项目变更的时间间隔，默认为0不扫描 -->
         <configuration>
           <scanIntervalSeconds>10</scanIntervalSeconds>
-            <reload>automatic</reload>
+          <reload>automatic</reload>
           <webAppConfig>
             <!-- 项目访问路径 -->
             <contextPath>/pwd-web</contextPath>

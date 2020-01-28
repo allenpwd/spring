@@ -19,7 +19,7 @@ import java.util.Date;
  *      注解@PostConstruct标注的方法【applyBeanPostProcessorsBeforeInitialization-》CommonAnnotationBeanPostProcessor.postProcessBeforeInitialization】
  *      接口InitializingBean的实现方法afterPropertiesSet（不推荐，因为代码与接口耦合）【invokeInitMethods】
  *      init-method属性指定的方法【invokeInitMethods】
- *      接口SmartInitializingSingleton的实现方法afterSingletonsInstantiated（不推荐，因为代码与接口耦合）【preInstantiateSingletons】
+ *      接口SmartInitializingSingleton的实现方法afterSingletonsInstantiated（不推荐，因为代码与接口耦合），单例情况下【preInstantiateSingletons】
  *
  *      SmartLifeCycle.start(所有bean准备好之后)【finishRefresh-》 DefaultLifecycleProcessor#startBeans 】
  *   销毁：
