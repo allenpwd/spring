@@ -58,6 +58,15 @@ public class SPELTest {
         expression = parser.parseExpression(str, new TemplateParserContext());
         System.out.println(str + "=" + expression.getValue(evaluationContext, String.class));
 
+        //安全导航运算符，返回null的方式而不是抛出NullPointException
+        str = "#notExist?.name?.age";
+        expression = parser.parseExpression(str);
+        System.out.println(str + "=" + expression.getValue());
+
+        //Elvis运算符
+        str = "#ifExist?:'unknown'";//相当于#ifExist?ifExist:'unknown'
+        expression = parser.parseExpression(str);
+        System.out.println(str + "=" + expression.getValue());
     }
 
 }
