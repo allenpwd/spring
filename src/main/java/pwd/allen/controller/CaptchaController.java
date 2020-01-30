@@ -5,6 +5,9 @@ import com.google.code.kaptcha.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import pwd.allen.service.MyService;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
@@ -24,6 +27,9 @@ public class CaptchaController {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     Producer captchaProducer;
+
+    @Autowired
+    private MyService myService;
 
     @RequestMapping("getCaptcha.do")
     public void getCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -50,6 +56,12 @@ public class CaptchaController {
         }
 
         System.out.println("Session 验证码是aasdfa：" + request.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY));
+    }
+
+    @RequestMapping("my.do")
+    @ResponseBody
+    public void my(HttpServletRequest request, @RequestParam(value = "name", required = false) String name) {
+        myService.printTwo(name);
     }
 
 }

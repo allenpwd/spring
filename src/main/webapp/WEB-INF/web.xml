@@ -4,6 +4,20 @@
 
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
+  <!-- 告诉ContextLoadListener用注解的方式加载bean -->
+  <context-param>
+    <param-name>contextClass</param-name>
+    <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+  </context-param>
+  <!-- spring配置的路径 -->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>pwd.allen.config.MainConfig</param-value>
+    <!--<param-value>classpath:bean.xml</param-value>-->
+  </context-param>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
   <servlet>
     <servlet-name>dispatcherServlet</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>

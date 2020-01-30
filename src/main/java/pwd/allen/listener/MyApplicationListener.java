@@ -4,6 +4,7 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.support.ServletRequestHandledEvent;
 
 /**
  * 自定义监听器，监听ApplicationEvent及其子类事件
@@ -41,5 +42,15 @@ public class MyApplicationListener implements ApplicationListener<ApplicationEve
     @EventListener(classes = {ApplicationEvent.class})
     public void myEventListenerMethod(ApplicationEvent event) {
         System.out.println("@EventListener接收事件：" + event);
+    }
+
+    /**
+     * 监听requestUrl包含my.do的请求
+     * @param event
+     */
+    @EventListener(classes = {ServletRequestHandledEvent.class}, condition = "#event.requestUrl.contains('my.do')")
+    public void myEventListenerMethodTwo(ServletRequestHandledEvent event) {
+        System.out.println("@EventListener接收事件：" + event);
+
     }
 }
