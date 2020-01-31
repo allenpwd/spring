@@ -1,13 +1,15 @@
 package pwd.allen;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.aop.aspectj.AspectJMethodBeforeAdvice;
+import org.junit.runner.RunWith;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
-import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.test.annotation.Repeat;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 import pwd.allen.aop.MyAspect;
 import pwd.allen.config.MainConfig;
 import pwd.allen.entity.Fruit;
@@ -21,19 +23,16 @@ import java.util.Locale;
  * @author pwd
  * @create 2018-11-03 14:55
  **/
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = MainConfig.class)
+@TestPropertySource(properties = {"test.one=fucking", "test.two: 4040"})
 public class AnnotationTest {
-    private AnnotationConfigApplicationContext applicationContext;
 
-    @Before
-    public void init() {
-        //任意@Companent或JSR-330注解的类都可以作为构造方法的输入
-        applicationContext = new AnnotationConfigApplicationContext(MainConfig.class);
-    }
-
-    @After
-    public void destroy() {
-        applicationContext.close();
-    }
+    /**
+     * 任意@Companent或JSR-330注解的类都可以作为AnnotationConfigApplicationContext构造方法的输入
+     */
+    @Autowired
+    private ConfigurableApplicationContext applicationContext;
 
     @Test
     public void testOne() {
@@ -79,7 +78,7 @@ public class AnnotationTest {
 
     @Test
     public void resolveValue() {
-        String str = "#{'os.name=${os.name}'}\njdbc.url=${jdbc.url}\n算术:#{12+35}\n#{'fruit.name='+fruit.name}";
+        String str = "#{'os.name=${os.name}'}\njdbc.url=${jdbc.url}\n算术:#{12+35}\n#{'fruit.name='+fruit.name}\n${test.one} ${test.two}";
 
         //使用beanFactory解析属性中的占位符
         System.out.println(applicationContext.getBeanFactory().resolveEmbeddedValue(str));
@@ -97,6 +96,7 @@ public class AnnotationTest {
         System.out.println(messageSource.getMessage(code, args, Locale.SIMPLIFIED_CHINESE));
     }
 
+    @Repeat(2)
     @Test
     public void printAllBean() {
         System.out.println("------------------printAllBean begin------------------");
