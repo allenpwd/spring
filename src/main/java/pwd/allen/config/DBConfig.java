@@ -1,8 +1,10 @@
 package pwd.allen.config;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -17,14 +19,13 @@ import javax.sql.DataSource;
  * @create 2020-01-28 22:27
  **/
 @EnableTransactionManagement//声明式事务
+@PropertySource(value = {"classpath:/db.properies"}, encoding = "UTF-8")
 @Configuration
 public class DBConfig {
 
     @Bean
-    public DataSource dataSource() throws Exception {
-        String jdbcUrl = "jdbc:mysql://127.0.0.1:3306/test";
-        String password = "123456";
-
+    public DataSource dataSource(@Value("${jdbc.url}") String jdbcUrl
+            , @Value("${jdbc.password}")String password) throws Exception {
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
         dataSource.setUser("root");
         dataSource.setPassword(password);
@@ -35,12 +36,12 @@ public class DBConfig {
         return dataSource;
     }
     @Bean
-    public JdbcTemplate jdbcTemplate() throws Exception {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource());
+    public JdbcTemplate jdbcTemplate(DataSource dataSource) throws Exception {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         return jdbcTemplate;
     }
     @Bean
-    public PlatformTransactionManager dataSourceTransactionManager() throws Exception {
-        return new DataSourceTransactionManager(dataSource());
+    public PlatformTransactionManager dataSourceTransactionManager(DataSource dataSource) throws Exception {
+        return new DataSourceTransactionManager(dataSource);
     }
 }

@@ -3,6 +3,7 @@ package pwd.allen.dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import pwd.allen.entity.Person;
 
 /**
@@ -15,6 +16,7 @@ public class PersonDao {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    @Transactional
     public int insert(Person person) {
         String sql = "INSERT INTO db_user(user_name,age) values (?, ?)";
         return jdbcTemplate.update(sql, person.getName(), person.getAge());
