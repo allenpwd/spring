@@ -1,35 +1,21 @@
 package pwd.allen.config;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import pwd.allen.annotation.MyQualifier;
-import pwd.allen.aop.MyAspect;
 import pwd.allen.condition.MyCondition;
 import pwd.allen.entity.Fruit;
-import pwd.allen.entity.Person;
-import pwd.allen.importBeanDefinitionRegistrar.MyImportBeanDefinitionRegistrar;
 import pwd.allen.importSelector.MyImportSelector;
 import pwd.allen.service.MyService;
 
-import javax.sql.DataSource;
-import java.beans.ConstructorProperties;
-import java.beans.PropertyVetoException;
 import java.util.Date;
 
 //默认的profile是default，若没有设置profile则该配置类被激活
 //要激活的profile可通过
 @Profile("default")
-@PropertySource(value = {"classpath:/my.properies"}, encoding = "UTF-8")//加载指定的配置文件
+@PropertySource(value = {"classpath:/my.properties"}, encoding = "UTF-8")//加载指定的配置文件
 //自动扫描pwd.allen目录下的组件，并排除@Controller标注的
 @ComponentScan(value = {"pwd.allen"},
         excludeFilters = {
@@ -55,9 +41,10 @@ public class MainConfig {
     }
 
     /**
+     * 国际化资源配置
+     *
      * 如果没有自己定义一个，容器会默认创建一个 {@link org.springframework.context.support.DelegatingMessageSource}
      *
-     * 国际化
      * @return
      */
     @Bean

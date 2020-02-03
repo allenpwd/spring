@@ -9,7 +9,7 @@
         OVERRIDE： PropertyPlaceholderConfigurer使用，因为在spring 3.1之前版本是没有Enviroment的，所以OVERRIDE是spring 3.1之前版本的Environment
         NEVER：只查找properties-ref、location
     -->
-    <context:property-placeholder location="classpath:db.properies" system-properties-mode="ENVIRONMENT"/>
+    <context:property-placeholder location="classpath:db.properties" system-properties-mode="ENVIRONMENT"/>
 
     <!--bean工厂方式创建实例-->
     <bean id="myFactoryBeanFromXML" class="pwd.allen.factoryBean.MyFactoryBean">

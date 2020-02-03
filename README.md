@@ -29,3 +29,12 @@ spring中是通过ApplicationListener及ApplicationEventMulticaster来进行事�
 - Requesthandleevent:在Web应用中,当一个HTP请求结東时触发该事件。
 - Contextstartedevent:当容器调用 start()方法时,触发该事件。
 - Contextstopevent:当容器调用stop)方法时,触发该事件。
+
+### 问题
+#### Controller加上@ResponseBody请求返回406状态码
+原因：
+- 要支持json解析，需要引入jackson相关依赖
+- 需开启springmvc对json的读写支持；xml配置时加上<mvc:annotation-driven/>即可
+#### 文件上传问题
+##### （1）no multi-part configuration has been provided
+原因：需要配置MultipartResolver比如CommonsMultipartResolver，此外还要引入commons-upload.jar依赖

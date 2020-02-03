@@ -12,11 +12,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.mock.web.*;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 使用 {@link MockHttpServletRequest}和 {@link MockHttpSession} 测试 request和session的bean
- *
+ * 需要标注@WebAppConfiguration
  *
  * @author lenovo
  * @create 2020-02-01 9:43
@@ -36,7 +39,7 @@ public class WebTest {
         }
 
         //region request作用域的bean，可以使用spel表达式读取request
-        //        @Bean
+//        @Bean
 //        @Scope(WebApplicationContext.SCOPE_REQUEST)
 //        public TestEntity fruitTest(HttpServletRequest request) {
 //            TestEntity entity = new TestEntity();
@@ -48,7 +51,6 @@ public class WebTest {
         public TestEntity testEntity() {
             return new TestEntity();
         }
-
         //endregion
 
 

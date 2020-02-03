@@ -22,6 +22,8 @@ import pwd.allen.entity.Fruit;
  * 3）若没有指定ContextConfiguration的classes，{@link AnnotationConfigContextLoader} 和 {@link AnnotationConfigWebContextLoader}
  *  将检测符合配置类实现要求的测试类的所有静态嵌套类
  *
+ * @RunWith(SpringRunner.class)：获取Test Context框架的相关支持，如加载应用程序上下文、测试实例的依赖注入、事务测试方法执行等
+ *
  * @author lenovo
  * @create 2020-01-23 10:56
  **/

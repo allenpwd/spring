@@ -19,7 +19,7 @@ import javax.sql.DataSource;
  * @create 2020-01-28 22:27
  **/
 @EnableTransactionManagement//声明式事务
-@PropertySource(value = {"classpath:/db.properies"}, encoding = "UTF-8")
+@PropertySource(value = {"classpath:/db.properties"}, encoding = "UTF-8")
 @Configuration
 public class DBConfig {
 

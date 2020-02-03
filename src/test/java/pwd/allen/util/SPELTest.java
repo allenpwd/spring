@@ -3,6 +3,7 @@ package pwd.allen.util;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.expression.Expression;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -14,6 +15,8 @@ import pwd.allen.entity.Person;
 import java.util.ArrayList;
 
 /**
+ * 测试spring 的 spel表达式解析器
+ *
  * @author lenovo
  * @create 2020-01-29 21:24
  **/

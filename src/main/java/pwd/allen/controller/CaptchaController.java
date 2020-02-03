@@ -4,9 +4,11 @@ import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import pwd.allen.service.MyService;
 
 import javax.imageio.ImageIO;
@@ -15,13 +17,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * @author pwd
  * @create 2018-08-12 10:31
  **/
 @Controller
-@RequestMapping("/help")
+@RequestMapping("test")
 public class CaptchaController {
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
@@ -60,8 +63,20 @@ public class CaptchaController {
 
     @RequestMapping("my.do")
     @ResponseBody
-    public void my(HttpServletRequest request, @RequestParam(value = "name", required = false) String name) {
+    public Object my(HttpServletRequest request, @RequestParam(value = "name", required = false) String name) {
         myService.printTwo(name);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("name", name);
+        return map;
+    }
+
+    @PostMapping("upload.do")
+    @ResponseBody
+    public Object upload(@RequestParam("file") MultipartFile file) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("size", file.getSize());
+        map.put("originalFilename", file.getOriginalFilename());
+        return map;
     }
 
 }
