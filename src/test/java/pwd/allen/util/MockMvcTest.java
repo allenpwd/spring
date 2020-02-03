@@ -17,6 +17,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MockMvcBuilder;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.ConfigurableMockMvcBuilder;
@@ -75,15 +76,20 @@ public class MockMvcTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
+    /**
+     * 测试上传文件
+     * @throws Exception
+     */
     @Test
     public void mockUpload() throws Exception {
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                 .defaultRequest(get("/").contextPath("/pwd-web"))//设置通用的默认请求属性
                 .build();
         String filePath = "db.properties";
-        mockMvc.perform(MockMvcRequestBuilders
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                 .fileUpload("/pwd-web/test/upload.do")
-                .file(new MockMultipartFile("file", new ClassPathResource(filePath).getInputStream())))
-                .andDo(MockMvcResultHandlers.print());
+                .file(new MockMultipartFile("file", filePath, "text/plain", new ClassPathResource(filePath).getInputStream())))
+                .andReturn();
+        System.out.println(mvcResult.getResponse().getContentAsString());
     }
 }

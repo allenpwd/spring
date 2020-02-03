@@ -12,23 +12,25 @@
     <!--除了注册了这两个bean，还提供了很多支持，其中一项就提到了读写JSON的支持（Jackson）-->
     <mvc:annotation-driven/>
 
+    <context:property-placeholder location="classpath:kaptcha.properties"/>
+
     <bean id="captchaProducer" class="com.google.code.kaptcha.impl.DefaultKaptcha">
         <property name="config">
             <bean class="com.google.code.kaptcha.util.Config">
                 <constructor-arg>
                     <props>
-                        <prop key="kaptcha.border">yes</prop>
-                        <prop key="kaptcha.border.color">105,179,90</prop>
-                        <prop key="kaptcha.image.width">160</prop>
-                        <prop key="kaptcha.image.height">50</prop>
-                        <prop key="kaptcha.session.key">code</prop>
-                        <prop key="kaptcha.textproducer.font.color">black</prop>
-                        <prop key="kaptcha.textproducer.font.size">35</prop>
-                        <prop key="kaptcha.textproducer.char.space">3</prop>
-                        <prop key="kaptcha.textproducer.char.length">5</prop>
-                        <prop key="kaptcha.obscurificator.impl">com.google.code.kaptcha.impl.ShadowGimpy</prop>
-                        <!-- 配置中文 <prop key="kaptcha.textproducer.impl">com.google.code.kaptcha.text.impl.ChineseTextProducer</prop> -->
-                        <prop key="kaptcha.textproducer.font.names">彩云,宋体,楷体,微软雅黑</prop>
+                        <prop key="kaptcha.border">${kaptcha.border}</prop>
+                        <prop key="kaptcha.border.color">${kaptcha.border.color}</prop>
+                        <prop key="kaptcha.image.width">${kaptcha.image.width}</prop>
+                        <prop key="kaptcha.image.height">${kaptcha.image.height}</prop>
+                        <prop key="kaptcha.session.key">${kaptcha.session.key}</prop>
+                        <prop key="kaptcha.textproducer.font.color">${kaptcha.textproducer.font.color}</prop>
+                        <prop key="kaptcha.textproducer.font.size">${kaptcha.textproducer.font.size}</prop>
+                        <prop key="kaptcha.textproducer.char.space">${kaptcha.textproducer.char.space}</prop>
+                        <prop key="kaptcha.textproducer.char.length">${kaptcha.textproducer.char.length}</prop>
+                        <prop key="kaptcha.obscurificator.impl">${kaptcha.obscurificator.impl}</prop>
+                        <!-- 配置中文 <prop key="kaptcha.textproducer.impl">${kaptcha.textproducer.impl}</prop> -->
+                        <prop key="kaptcha.textproducer.font.names">${kaptcha.textproducer.font.names}</prop>
                     </props>
                 </constructor-arg>
             </bean>

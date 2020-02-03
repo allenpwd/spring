@@ -1,6 +1,6 @@
 package pwd.allen.config;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,13 +26,12 @@ public class DBConfig {
     @Bean
     public DataSource dataSource(@Value("${jdbc.url}") String jdbcUrl
             , @Value("${jdbc.password}")String password) throws Exception {
-        ComboPooledDataSource dataSource = new ComboPooledDataSource();
-        dataSource.setUser("root");
+        DruidDataSource dataSource = new DruidDataSource();
+        dataSource.setUsername("root");
         dataSource.setPassword(password);
-        dataSource.setDriverClass("com.mysql.jdbc.Driver");
-        dataSource.setJdbcUrl(jdbcUrl);
+        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        dataSource.setUrl(jdbcUrl);
         dataSource.setLoginTimeout(5);
-        dataSource.setUnreturnedConnectionTimeout(5);
         return dataSource;
     }
     @Bean

@@ -1,5 +1,7 @@
 package pwd.allen.listener;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.EventListener;
@@ -13,6 +15,8 @@ import org.springframework.web.context.support.ServletRequestHandledEvent;
  **/
 @Component
 public class MyApplicationListener implements ApplicationListener<ApplicationEvent> {
+    
+    private static final Logger logger = LoggerFactory.getLogger(MyApplicationListener.class);
 
     /**
      * 发布ContextRefreshedEvent事件
@@ -28,7 +32,7 @@ public class MyApplicationListener implements ApplicationListener<ApplicationEve
      */
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
-        System.out.println("ApplicationListener接口实现接受事件：" + event);
+        logger.debug("ApplicationListener接口实现接受事件：" + event);
     }
 
     /**
@@ -41,7 +45,7 @@ public class MyApplicationListener implements ApplicationListener<ApplicationEve
      */
     @EventListener(classes = {ApplicationEvent.class})
     public void myEventListenerMethod(ApplicationEvent event) {
-        System.out.println("@EventListener接收事件：" + event);
+        logger.debug("@EventListener接收事件：" + event);
     }
 
     /**
@@ -50,7 +54,7 @@ public class MyApplicationListener implements ApplicationListener<ApplicationEve
      */
     @EventListener(classes = {ServletRequestHandledEvent.class}, condition = "#event.requestUrl.contains('my.do')")
     public void myEventListenerMethodTwo(ServletRequestHandledEvent event) {
-        System.out.println("@EventListener接收事件：" + event);
+        logger.debug("@EventListener接收事件：" + event);
 
     }
 }
