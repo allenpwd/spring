@@ -24,6 +24,9 @@ public class DaoTest extends AbstractTransactionalJUnit4SpringContextTests {
     @Autowired
     private PersonDao personDao;
 
+    /**
+     * 手动控制事务回滚
+     */
     @Test
     public void insert() {
 
@@ -42,5 +45,11 @@ public class DaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 //        TestTransaction.flagForCommit();
         TestTransaction.flagForRollback();
         TestTransaction.end();
+    }
+
+    @Test
+    public void get() {
+        Person person = personDao.getById(1);
+        System.out.println(person);
     }
 }

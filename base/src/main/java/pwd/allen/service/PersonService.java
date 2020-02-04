@@ -28,7 +28,10 @@ public class PersonService {
         person.setName(uuid);
         person.setAge(16);
         result = personDao.insert(person);
-        int num = 1 / 0;
         return result;
+    }
+
+    public Person getById(Integer id) {
+        return personDao.getById(id);
     }
 }

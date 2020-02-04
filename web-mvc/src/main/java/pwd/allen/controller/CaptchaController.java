@@ -4,12 +4,10 @@ import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pwd.allen.service.MyService;
+import pwd.allen.service.PersonService;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
@@ -23,7 +21,7 @@ import java.util.HashMap;
  * @author pwd
  * @create 2018-08-12 10:31
  **/
-@Controller
+@RestController
 @RequestMapping("test")
 public class CaptchaController {
 
@@ -33,6 +31,9 @@ public class CaptchaController {
 
     @Autowired
     private MyService myService;
+
+    @Autowired
+    private PersonService personService;
 
     @RequestMapping("getCaptcha.do")
     public void getCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -62,7 +63,6 @@ public class CaptchaController {
     }
 
     @RequestMapping("my.do")
-    @ResponseBody
     public Object my(HttpServletRequest request, @RequestParam(value = "name", required = false) String name) {
         myService.printTwo(name);
         HashMap<String, Object> map = new HashMap<>();
@@ -71,7 +71,6 @@ public class CaptchaController {
     }
 
     @PostMapping("upload.do")
-    @ResponseBody
     public Object upload(@RequestParam("file") MultipartFile file) {
         HashMap<String, Object> map = new HashMap<>();
         map.put("size", file.getSize());
