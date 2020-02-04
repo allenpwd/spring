@@ -9,15 +9,15 @@ import pwd.allen.service.PersonService;
  * @author 门那粒沙
  * @create 2020-02-04 21:18
  **/
-@RequestMapping("person")
 @RestController
+@RequestMapping("person")
 public class PersonController {
 
     @Autowired
     private PersonService personService;
 
-    @GetMapping("get")
-    public Person get(@RequestParam("id") Integer id) {
+    @RequestMapping("get/{id}")
+    public Person getById(@PathVariable("id") Integer id) {
         return personService.getById(id);
     }
 }

@@ -23,8 +23,8 @@ import javax.sql.DataSource;
 @Configuration
 public class DBConfig {
 
-    @Bean
-    public DataSource dataSource(@Value("${jdbc.url}") String jdbcUrl
+    @Bean(initMethod = "init")
+    public DruidDataSource dataSource(@Value("${jdbc.url}") String jdbcUrl
             , @Value("${jdbc.password}")String password) throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUsername("root");

@@ -61,7 +61,7 @@ public class MockMvcTest {
         //endregion
 
         String name = "pwd";
-        mockMvc.perform(get("/test/my.do")
+        mockMvc.perform(get("/test/my")
                 .param("name", name))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -80,7 +80,7 @@ public class MockMvcTest {
                 .build();
         String filePath = "db.properties";
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                .fileUpload("/pwd-web/test/upload.do")
+                .fileUpload("/pwd-web/test/upload")
                 .file(new MockMultipartFile("file", filePath, "text/plain", new ClassPathResource(filePath).getInputStream())))
                 .andReturn();
         System.out.println(mvcResult.getResponse().getContentAsString());

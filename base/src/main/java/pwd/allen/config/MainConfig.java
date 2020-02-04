@@ -15,7 +15,7 @@ import java.util.Date;
 //默认的profile是default，若没有设置profile则该配置类被激活
 //要激活的profile可通过
 @Profile("default")
-@PropertySource(value = {"classpath:/my.properties"}, encoding = "UTF-8")//加载指定的配置文件
+@PropertySource(value = {"classpath:my.properties"}, encoding = "UTF-8")//加载指定的配置文件，如果其他项目依赖这个项目，path前加上/的话会报找不到资源的错误
 //自动扫描pwd.allen目录下的组件，并排除@Controller标注的
 @ComponentScan(value = {"pwd.allen"},
         excludeFilters = {

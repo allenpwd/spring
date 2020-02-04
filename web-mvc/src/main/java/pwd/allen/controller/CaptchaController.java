@@ -32,10 +32,7 @@ public class CaptchaController {
     @Autowired
     private MyService myService;
 
-    @Autowired
-    private PersonService personService;
-
-    @RequestMapping("getCaptcha.do")
+    @RequestMapping("getCaptcha")
     public void getCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setDateHeader("Expires", 0);// 禁止server端缓存
         // 设置标准的 HTTP/1.1 no-cache headers.
@@ -62,7 +59,7 @@ public class CaptchaController {
         System.out.println("Session 验证码是aasdfa：" + request.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY));
     }
 
-    @RequestMapping("my.do")
+    @RequestMapping("my")
     public Object my(HttpServletRequest request, @RequestParam(value = "name", required = false) String name) {
         myService.printTwo(name);
         HashMap<String, Object> map = new HashMap<>();
@@ -70,7 +67,7 @@ public class CaptchaController {
         return map;
     }
 
-    @PostMapping("upload.do")
+    @PostMapping("upload")
     public Object upload(@RequestParam("file") MultipartFile file) {
         HashMap<String, Object> map = new HashMap<>();
         map.put("size", file.getSize());

@@ -76,7 +76,8 @@ public class MvcConfig extends WebMvcConfigurerAdapter implements WebApplication
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
 
-		//region 配置druid的监控功能
+		//region 配置druid的监控功能，springboot可以使用 ServletRegistrationBean 和 FilterRegistrationBean
+		//配置DruidDataSource的bean的时候需要指明initMethod="init"使之初始化，否则要第一次sql请求才能看到数据源监控数据
 		ServletRegistration.Dynamic dynamic = servletContext.addServlet("statViewServlet", StatViewServlet.class);
 		dynamic.setInitParameter("loginUsername", "druid");
 		dynamic.setInitParameter("loginPassword", "123456");
