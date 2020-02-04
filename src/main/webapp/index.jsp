@@ -1,4 +1,4 @@
-<%@ page import="pwd.allen.entity.Fruit" %>
+<%@ page import="pwd.Fruit" %>
 <%
     Fruit fruit = new Fruit();
     fruit.say("fuck you");

@@ -12,15 +12,15 @@
     <context:property-placeholder location="classpath:db.properties" system-properties-mode="ENVIRONMENT"/>
 
     <!--bean工厂方式创建实例-->
-    <bean id="myFactoryBeanFromXML" class="pwd.MyFactoryBean">
+    <bean id="myFactoryBeanFromXML" class="pwd.allen.factoryBean.MyFactoryBean">
     </bean>
 
-    <bean id="fruit" class="pwd.Fruit" p:name="from xml:${user.dir} #{12+34}" primary="true" scope="prototype">
+    <bean id="fruit" class="pwd.allen.entity.Fruit" p:name="from xml:${user.dir} #{12+34}" primary="true" scope="prototype">
         <property name="price" value="40"/>
     </bean>
 
     <!--ImportBeanDefinitionRegistrar通过xml注入的话它的registerBeanDefinitions方法不会被回调-->
-    <bean id="myImportBeanDefinitionRegistrar" class="pwd.MyImportBeanDefinitionRegistrar"></bean>
+    <bean id="myImportBeanDefinitionRegistrar" class="pwd.allen.importBeanDefinitionRegistrar.MyImportBeanDefinitionRegistrar"></bean>
 
     <!--getFruit使用动态获取bean的方式，
         methodReplacer替换myMethod方法（不推荐使用，返回结果类型要一致）
@@ -32,10 +32,10 @@
     <!--</bean>-->
 
     <!--xml配置的方式配置aspect aop-->
-    <bean id="myAspect4XML" class="pwd.MyAspect4XML"/>
+    <bean id="myAspect4XML" class="pwd.allen.aop.MyAspect4XML"/>
     <aop:config>
         <aop:pointcut id="myPointCut" expression="execution(public void pwd.allen.service.My*.*Two(..))"/>
-        <aop:pointcut id="myAnnocationPointCut" expression="@annotation(pwd.MyAnnotation)"/>
+        <aop:pointcut id="myAnnocationPointCut" expression="@annotation(pwd.allen.annotation.MyAnnotation)"/>
         <aop:aspect id="aspect" ref="myAspect4XML">
             <aop:before method="before"  pointcut-ref="myPointCut"/>
             <aop:before method="before"  pointcut-ref="myAnnocationPointCut"/>

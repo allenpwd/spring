@@ -21,7 +21,7 @@ import java.util.Properties;
 /**
  * spring MVC配置类
  */
-//@Configuration
+@Configuration
 @ComponentScan(basePackages="pwd.allen.controller")
 @EnableWebMvc
 public class MvcConfig extends WebMvcConfigurerAdapter {
@@ -50,6 +50,7 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 	 * @return
 	 * @throws IOException
 	 */
+	@Bean
 	public DefaultKaptcha kaptcha() throws IOException {
 		DefaultKaptcha kaptcha = new DefaultKaptcha();
 		Config config = new Config(PropertiesLoaderUtils.loadProperties(new ClassPathResource("kaptcha.properties")));
