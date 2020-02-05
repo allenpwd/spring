@@ -48,7 +48,7 @@ import java.sql.SQLException;
  * @create 2020-01-21 16:53
  **/
 @RunWith(SpringJUnit4ClassRunner.class)//指定单元测试执行类
-@ContextConfiguration(classes = MainConfig.class)
+@ContextConfiguration(classes = {MainConfig.class})
 public class jdbcTemplateTest {
 
     @Autowired

@@ -2,6 +2,7 @@ package pwd.allen.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import pwd.allen.annotation.MyAnnotation;
 import pwd.allen.entity.Person;
 import pwd.allen.service.PersonService;
 
@@ -16,8 +17,10 @@ public class PersonController {
     @Autowired
     private PersonService personService;
 
+    @MyAnnotation
     @RequestMapping("get/{id}")
     public Person getById(@PathVariable("id") Integer id) {
-        return personService.getById(id);
+        Person person = personService.getById(id);
+        return person;
     }
 }

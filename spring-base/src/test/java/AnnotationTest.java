@@ -9,6 +9,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import pwd.allen.aop.MyAspect;
+import pwd.allen.config.AOPConfig;
 import pwd.allen.config.MainConfig;
 import pwd.allen.entity.Fruit;
 import pwd.allen.entity.Person;
@@ -22,7 +23,7 @@ import java.util.Locale;
  * @create 2018-11-03 14:55
  **/
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = MainConfig.class)
+@ContextConfiguration(classes = {MainConfig.class, AOPConfig.class})
 @TestPropertySource(properties = {"test.one=fucking", "test.two: 4040"})//设置测试的环境变量，重复则覆盖
 public class AnnotationTest {
 

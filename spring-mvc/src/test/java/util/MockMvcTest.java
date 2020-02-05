@@ -19,8 +19,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.ConfigurableMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import pwd.allen.config.AOPConfig;
 import pwd.allen.config.MainConfig;
+import pwd.allen.config.MvcConfig;
 import pwd.allen.controller.CaptchaController;
+import pwd.allen.filter.MyFilter;
 import pwd.allen.service.MyService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -33,8 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @RunWith(SpringRunner.class)
 @ContextHierarchy({
-        @ContextConfiguration(classes = MainConfig.class),
-        @ContextConfiguration(locations = "file:src/main/webapp/WEB-INF/dispatcherServlet-servlet.xml")
+        @ContextConfiguration(classes = {MainConfig.class, AOPConfig.class, MvcConfig.class})
+//        , @ContextConfiguration(locations = "file:src/main/webapp/WEB-INF/dispatcherServlet-servlet.xml")
 })
 public class MockMvcTest {
 
@@ -57,6 +60,8 @@ public class MockMvcTest {
         mockMvcBuilder = MockMvcBuilders.standaloneSetup(captchaController);
         //配置期望所有响应中的状态为200
         mockMvcBuilder.alwaysExpect(status().isOk());
+        //添加过滤器
+        mockMvcBuilder.addFilter(new MyFilter(), "/*");
         mockMvc = mockMvcBuilder.build();
         //endregion
 

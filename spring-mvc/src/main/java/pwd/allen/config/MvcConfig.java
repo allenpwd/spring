@@ -7,6 +7,7 @@ import com.google.code.kaptcha.util.Config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.web.WebApplicationInitializer;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
+import pwd.allen.filter.MyFilter;
 
 import javax.servlet.*;
 import java.io.IOException;
@@ -32,6 +34,7 @@ import java.io.IOException;
  */
 @Configuration
 @ComponentScan(basePackages="pwd.allen.controller")
+@Import({AOPConfig.class})//把AOP配置放到spring mvc容器里，不然自定义的AOP在controller层不起效
 @EnableWebMvc
 public class MvcConfig extends WebMvcConfigurerAdapter implements WebApplicationInitializer {
 
@@ -88,5 +91,8 @@ public class MvcConfig extends WebMvcConfigurerAdapter implements WebApplication
 		filterDynamic.setInitParameter("exclusions", "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*");
 		filterDynamic.addMappingForUrlPatterns(null, false, "/*");
 		//endregion
+
+		//添加自定义的过滤器
+		servletContext.addFilter("myFilter", MyFilter.class).addMappingForUrlPatterns(null, false, "/person/*");
 	}
 }
