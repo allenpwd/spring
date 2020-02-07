@@ -3,6 +3,7 @@ package util;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataAccessException;
@@ -116,7 +117,7 @@ public class jdbcTemplateTest {
 
     /**
      * 测试给blob类型字段赋值
-     * 使用注解方式加上事务
+     * 使用注解方式加上事务（推荐）事务管理与业务逻辑解耦
      */
     @Test
     @Transactional
@@ -136,8 +137,9 @@ public class jdbcTemplateTest {
     }
 
     /**
-     * 用 TransactionTemplate加上事务
-     *
+     * 用 TransactionTemplate加上事务，
+     * 原理：从源码可以看到其实是调用transactionManager.getTransaction(this)获取事务管理，本身自己继承TransactionDefinition，可以定义事务属性
+     * 特点：能明确地设置事务，与逻辑代码紧密结合，适合事务操作比较少不繁琐的场景
      */
     @Test
     public void insert() {

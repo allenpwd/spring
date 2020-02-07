@@ -16,7 +16,7 @@
     <bean id="myFactoryBeanFromXML" class="pwd.allen.factoryBean.MyFactoryBean">
     </bean>
 
-    <bean id="fruit" class="pwd.allen.entity.Fruit" p:name="from xml:${user.dir} #{12+34}" primary="true" scope="prototype">
+    <bean id="prototypeFruit" class="pwd.allen.entity.Fruit" p:name="from xml:${user.dir} #{12+34}" primary="true" scope="prototype">
         <property name="price" value="40"/>
     </bean>
 

@@ -1,6 +1,8 @@
 package pwd.allen.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pwd.allen.annotation.MyAnnotation;
@@ -17,7 +19,8 @@ import java.util.UUID;
 public class PersonService {
 
     @Autowired
-    PersonDao personDao;
+    private PersonDao personDao;
+
 
     @Transactional
     @MyAnnotation

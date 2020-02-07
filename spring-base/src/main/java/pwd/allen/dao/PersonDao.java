@@ -1,12 +1,15 @@
 package pwd.allen.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pwd.allen.entity.Person;
+import pwd.allen.service.PersonService;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,7 +24,13 @@ public class PersonDao {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
     public int insert(Person person) {
+        //发布一个事件，用于测试@TransactionalEventListener
+        eventPublisher.publishEvent(new MyTransactionEvent("我是个与事务相关的事件"));
+
         String sql = "INSERT INTO db_user(user_name,age) values (?, ?)";
         return jdbcTemplate.update(sql, person.getName(), person.getAge());
     }
@@ -42,5 +51,16 @@ public class PersonDao {
                 return person;
             }
         });
+    }
+
+    /**
+     * 自定义一个事务事件
+     */
+    private static class MyTransactionEvent extends ApplicationEvent {
+
+        public MyTransactionEvent(Object source) {
+            super(source);
+        }
+
     }
 }
