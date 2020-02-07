@@ -11,6 +11,7 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import pwd.allen.config.MainConfig;
 import pwd.allen.dao.PersonDao;
 import pwd.allen.entity.Person;
@@ -40,7 +41,12 @@ public class DaoTest extends AbstractTransactionalJUnit4SpringContextTests {
         int rows = JdbcTestUtils.countRowsInTable(jdbcTemplate, "db_user");
         System.out.println("db_user.rows=" + rows);
 
+        //事务是否有效
         System.out.println(TestTransaction.isActive());
+
+        //是否在事务中
+        System.out.println(TransactionSynchronizationManager.isSynchronizationActive());
+        System.out.println(TransactionSynchronizationManager.getCurrentTransactionName());
 
         Person person = new Person();
         person.setName("沙雕");
