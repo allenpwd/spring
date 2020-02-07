@@ -15,10 +15,14 @@ import javax.sql.DataSource;
 /**
  * 数据库配置
  *
+ * {@link org.springframework.transaction.annotation.Transactional}注解
+ *  属性：
+ *      propagation：指定事务传播机制，默认 Transaction
+ *
  * @author lenovo
  * @create 2020-01-28 22:27
  **/
-@EnableTransactionManagement//声明式事务
+@EnableTransactionManagement//开启基于注解的声明式事务，可以代替xml的<tx:*>配置
 @PropertySource(value = {"classpath:/db.properties"}, encoding = "UTF-8")
 @Configuration
 public class DBConfig {

@@ -3,6 +3,8 @@ package util;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.support.AbstractLobCreatingPreparedStatementCallback;
@@ -17,7 +19,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.AfterTransaction;
 import org.springframework.test.context.transaction.BeforeTransaction;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.FileCopyUtils;
 import pwd.allen.config.MainConfig;
 
@@ -53,6 +60,9 @@ public class jdbcTemplateTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private PlatformTransactionManager transactionManager;
 
     /**
      * 事务开始之前执行
@@ -106,6 +116,7 @@ public class jdbcTemplateTest {
 
     /**
      * 测试给blob类型字段赋值
+     * 使用注解方式加上事务
      */
     @Test
     @Transactional
@@ -119,6 +130,27 @@ public class jdbcTemplateTest {
             protected void setValues(PreparedStatement ps, LobCreator lobCreator) throws SQLException, DataAccessException {
                 lobCreator.setBlobAsBytes(ps, 1, val);
                 ps.setInt(2, 1);
+            }
+        });
+        System.out.println(int_rel);
+    }
+
+    /**
+     * 用 TransactionTemplate加上事务
+     *
+     */
+    @Test
+    public void insert() {
+        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+        transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+
+        String sql = "insert into db_user(user_name,age) values(?,?)";
+
+        Integer int_rel = transactionTemplate.execute(new TransactionCallback<Integer>() {
+            @Override
+            public Integer doInTransaction(TransactionStatus status) {
+                status.setRollbackOnly();//设置直接回滚
+                return jdbcTemplate.update(sql,"测试插入", 11);
             }
         });
         System.out.println(int_rel);

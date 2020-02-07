@@ -2,7 +2,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <!--
         ENVIRONMENT：将使用Spring 3.1提供的PropertySourcesPlaceholderConfigurer，其他情况使用Spring 3.1之前的PropertyPlaceholderConfigurer
@@ -36,7 +37,8 @@
     <aop:config>
         <aop:pointcut id="myPointCut" expression="execution(public void pwd.allen.service.My*.*Two(..))"/>
         <aop:pointcut id="myAnnocationPointCut" expression="@annotation(pwd.allen.annotation.MyAnnotation)"/>
-        <aop:aspect id="aspect" ref="myAspect4XML">
+        <!--order：定义优先级,值越小优先级越大-->
+        <aop:aspect id="aspect" ref="myAspect4XML" order="0">
             <aop:before method="before"  pointcut-ref="myPointCut"/>
             <aop:before method="before"  pointcut-ref="myAnnocationPointCut"/>
             <aop:after method="after"  pointcut-ref="myPointCut"/>

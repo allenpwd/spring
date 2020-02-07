@@ -26,6 +26,9 @@ import pwd.allen.controller.CaptchaController;
 import pwd.allen.filter.MyFilter;
 import pwd.allen.service.MyService;
 
+import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -88,6 +91,10 @@ public class MockMvcTest {
                 .fileUpload("/pwd-web/test/upload")
                 .file(new MockMultipartFile("file", filePath, "text/plain", new ClassPathResource(filePath).getInputStream())))
                 .andReturn();
-        System.out.println(mvcResult.getResponse().getContentAsString());
+        try {
+            System.out.println(mvcResult.getResponse().getContentAsString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
