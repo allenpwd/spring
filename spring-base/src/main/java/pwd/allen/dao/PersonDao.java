@@ -6,6 +6,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pwd.allen.entity.Person;
@@ -36,21 +39,29 @@ public class PersonDao {
     }
 
     public Person getById(Integer id) {
-        String sql = "select * from db_user where id=?";
-        return jdbcTemplate.query(sql, new Object[]{id}, new ResultSetExtractor<Person>() {
-            @Override
-            public Person extractData(ResultSet resultSet) throws SQLException, DataAccessException {
-                Person person = null;
 
-                if (resultSet.next()) {
-                    person = new Person();
-                    person.setId(resultSet.getInt("id"));
-                    person.setAge(resultSet.getInt("age"));
-                    person.setName(resultSet.getString("user_name"));
-                }
+        RowMapper<Person> rowMapper = new RowMapper<Person>() {
+            @Override
+            public Person mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Person person = null;
+                person = new Person();
+                person.setId(rs.getInt("id"));
+                person.setAge(rs.getInt("age"));
+                person.setName(rs.getString("user_name"));
                 return person;
             }
-        });
+        };
+
+        //方法一
+//        String sql = "select * from db_user where id=?";
+//        return jdbcTemplate.queryForObject(sql, new Object[]{id}, rowMapper);
+
+        //另一种方法：封装成NamedParameterJdbcTemplate，可以使用命名参数符号，还可以包装javaBean来作为参数来源
+        String sql = "select * from db_user where id=:id";
+        Person person = new Person();
+        person.setId(id);
+        return new NamedParameterJdbcTemplate(jdbcTemplate)
+                .queryForObject(sql, new BeanPropertySqlParameterSource(person), rowMapper);
     }
 
     /**

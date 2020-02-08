@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.support.AbstractLobCreatingPreparedStatementCallback;
 import org.springframework.jdbc.core.support.AbstractLobStreamingResultSetExtractor;
 import org.springframework.jdbc.support.lob.DefaultLobHandler;
@@ -29,6 +30,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.FileCopyUtils;
 import pwd.allen.config.MainConfig;
+import pwd.allen.entity.Person;
+import pwd.allen.exception.CustomSQLErrorCodeSQLExceptionTranslator;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -159,6 +162,18 @@ public class jdbcTemplateTest {
             }
         });
         System.out.println(int_rel);
+    }
+
+    @Test
+    public void exceptionTranslator() {
+        jdbcTemplate.setExceptionTranslator(new CustomSQLErrorCodeSQLExceptionTranslator());
+
+        String sql = "select count(1) from db_user where ids=?";
+        try {
+            System.out.println(jdbcTemplate.queryForObject(sql, new Object[]{1}, Integer.class));
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
     }
 
 }

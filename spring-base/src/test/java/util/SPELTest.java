@@ -12,6 +12,8 @@ import pwd.allen.config.MainConfig;
 import pwd.allen.entity.Person;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * 测试spring 的 spel表达式解析器
@@ -69,6 +71,14 @@ public class SPELTest {
         str = "#ifExist?:'unknown'";//相当于#ifExist?ifExist:'unknown'
         expression = parser.parseExpression(str);
         System.out.println(str + "=" + expression.getValue());
+    }
+
+    @Test
+    public void test() {
+        Map<String, Object> map = Collections.singletonMap("name", (Object)"asdf");
+        System.out.println(map);
+        map.put("age", 12);
+        System.out.println(map);
     }
 
 }

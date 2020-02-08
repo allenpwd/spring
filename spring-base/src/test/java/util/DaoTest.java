@@ -22,6 +22,7 @@ import java.sql.SQLException;
  * 编程式事务管理方式
  * 继承AbstractTransactionalJUnit4SpringContextTests之后，可以使用applicationContext和jdbcTemplate实例变量
  * 需要在ApplicationContext中定义一个 DataSource 和 PlatformTransactionManager 的bean
+ * 每个test方法已经在事务环境中
  *
  * @author lenovo
  * @create 2020-02-01 14:47

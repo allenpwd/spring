@@ -15,7 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author pwd
@@ -62,8 +64,7 @@ public class CaptchaController {
     @RequestMapping("my")
     public Object my(HttpServletRequest request, @RequestParam(value = "name", required = false) String name) {
         myService.printTwo(name);
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("name", name);
+        Map<String, String> map = Collections.singletonMap("name", name);
         return map;
     }
 
