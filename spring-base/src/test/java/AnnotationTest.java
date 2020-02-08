@@ -51,8 +51,9 @@ public class AnnotationTest {
     public void aop() {
         //这里拿到的bean是代理对象，看到的fruits属性可能是null，但是不代表被代理对象没有fruits
         MyService myService = applicationContext.getBean(MyService.class);
-        myService.printOne("pwd/allen");
+//        myService.printOne("pwd/allen");
 //        myService.printTwo("allen");
+        myService.printThree("test three");
 
         //模拟aop TODO 有问题：JoinPoint.getTarget()返回null
         AspectJProxyFactory proxyFactory = new AspectJProxyFactory(new MyService());

@@ -3,6 +3,7 @@ package pwd.allen.aop;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -40,6 +41,7 @@ import java.util.Arrays;
  **/
 @Component
 @Aspect
+@Order(1)//定义优先级,值越小优先级越大，如果order一样，测试：xml配置的aspect优先于注解配置的
 public class MyAspect {
 
     /**

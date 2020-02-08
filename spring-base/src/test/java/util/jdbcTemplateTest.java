@@ -25,6 +25,7 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.FileCopyUtils;
 import pwd.allen.config.MainConfig;
@@ -124,6 +125,8 @@ public class jdbcTemplateTest {
     public void setBlob() {
         String sql = "UPDATE db_user set msg=? where id=?";
         final LobHandler lobHandler = new DefaultLobHandler();
+
+        System.out.println("当前所在事务：" + TransactionSynchronizationManager.getCurrentTransactionName());
 
         final byte[] val = "你是傻逼".getBytes();
         Integer int_rel = jdbcTemplate.execute(sql, new AbstractLobCreatingPreparedStatementCallback(lobHandler) {

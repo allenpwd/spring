@@ -55,6 +55,11 @@ public class MyService implements EmbeddedValueResolverAware {
         this.valueResolver = resolver;
     }
 
+    /**
+     * EmbeddedValueResolver解析属性中的占位符和spel表达式
+     * @param value
+     * @return
+     */
     public String resolveValue(String value) {
         return valueResolver.resolveStringValue(value);
     }
