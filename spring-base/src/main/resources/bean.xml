@@ -32,7 +32,12 @@
         <!--<replaced-method name="myMethod" replacer="replacer"/>-->
     <!--</bean>-->
 
-    <!--xml配置的方式配置aspect aop，还有一种自动代理方式，最好只用其中一种以避免混淆-->
+    <!--
+        xml配置的方式配置aspect aop，还有一种自动代理方式，最好只用其中一种以避免混淆
+        <aop:aspect>和<aop:advisor>的区别
+            都可以关联通知和切入点，区别是aspect是通过定义切面，后者定义通知器（通过实现Advice接口）
+            后者大多用于事务管理
+    -->
     <bean id="myAspect4XML" class="pwd.allen.aop.MyAspect4XML"/>
     <aop:config>
         <aop:pointcut id="myPointCut" expression="execution(public void pwd.allen.service.My*.*Two(..))"/>
