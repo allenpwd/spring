@@ -52,7 +52,7 @@ public class SPELTest {
 
         //设置评估上下文
         Person person = new Person();
-        person.setName("测试spel");
+        person.setUserName("测试spel");
         ArrayList list = new ArrayList();
         list.add(person);
         evaluationContext.setVariable("person", person);

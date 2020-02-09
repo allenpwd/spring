@@ -7,8 +7,10 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.support.AbstractLobCreatingPreparedStatementCallback;
 import org.springframework.jdbc.core.support.AbstractLobStreamingResultSetExtractor;
 import org.springframework.jdbc.support.lob.DefaultLobHandler;
@@ -36,9 +38,12 @@ import pwd.allen.exception.CustomSQLErrorCodeSQLExceptionTranslator;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * 测试 {@link JdbcTemplate}
@@ -164,16 +169,54 @@ public class jdbcTemplateTest {
         System.out.println(int_rel);
     }
 
+    /**
+     * 测试ExceptionTranslator，自定义封装SQLException
+     */
     @Test
     public void exceptionTranslator() {
         jdbcTemplate.setExceptionTranslator(new CustomSQLErrorCodeSQLExceptionTranslator());
 
-        String sql = "select count(1) from db_user where ids=?";
+        String sql = "select count(1) from db_user where ids=?";//故意把字段写错，会抛出 com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException 错误
         try {
             System.out.println(jdbcTemplate.queryForObject(sql, new Object[]{1}, Integer.class));
         } catch (DataAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 测试批处理，多条sql在同个连接中执行
+     */
+    @Test
+    public void batchUpdate() {
+        ArrayList<Person> list = new ArrayList<>();
+        list.add(new Person(2, "多莫格", 23));
+        list.add(new Person(3, "摩洛哥", 24));
+
+        int[] arr_rel = null;
+
+        //方式一
+        String sql = "insert into db_user(id,user_name,age) values(?,?,?) " +
+                "on DUPLICATE KEY UPDATE user_name=VALUES(user_name),age=VALUES(age)";
+        arr_rel = jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                ps.setInt(1, list.get(i).getId());
+                ps.setString(2, list.get(i).getUserName());
+                ps.setInt(3, list.get(i).getAge());
+            }
+            @Override
+            public int getBatchSize() {
+                return list.size();
+            }
+        });
+        System.out.println(Arrays.toString(arr_rel));
+
+        //方式二 根据bean（setter方法）或者map创建的 SqlParameterSource[]作为参数
+        sql = "insert into db_user(id,user_name,age) values(:id,:name,:age) " +
+                "on DUPLICATE KEY UPDATE user_name=VALUES(user_name),age=VALUES(age)";
+        arr_rel = new NamedParameterJdbcTemplate(jdbcTemplate).batchUpdate(sql, SqlParameterSourceUtils.createBatch(list.toArray()));
+        System.out.println(Arrays.toString(arr_rel));
     }
 
 }

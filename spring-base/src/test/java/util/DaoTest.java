@@ -50,7 +50,7 @@ public class DaoTest extends AbstractTransactionalJUnit4SpringContextTests {
         System.out.println(TransactionSynchronizationManager.getCurrentTransactionName());
 
         Person person = new Person();
-        person.setName("沙雕");
+        person.setUserName("沙雕");
         person.setAge(40);
         int insert = personDao.insert(person);
         System.out.println(insert);
@@ -75,12 +75,12 @@ public class DaoTest extends AbstractTransactionalJUnit4SpringContextTests {
     @Transactional
 //    @Transactional(rollbackFor = Throwable.class, noRollbackFor = SQLException.class) //除了SQLException其他任何异常都回滚
     @Commit//不加这个Spring TestContext会默认回滚；也可以替换成@Rollback(false)
-    public void insertTwo() throws Exception {
+    public void add() throws Exception {
         Person person = new Person();
-        person.setName("奥利给");
+        person.setUserName("奥利给");
         person.setAge(40);
-        int insert = personDao.insert(person);
-        System.out.println(insert);
+        person = personDao.add(person);
+        System.out.println(person);
 
         //不会导致回滚
         throw new SQLException("自定义的已检查异常");

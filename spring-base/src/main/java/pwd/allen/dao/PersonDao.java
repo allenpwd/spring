@@ -8,7 +8,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pwd.allen.entity.Person;
@@ -24,8 +27,18 @@ import java.sql.SQLException;
 @Repository
 public class PersonDao {
 
-    @Autowired
     JdbcTemplate jdbcTemplate;
+
+    private SimpleJdbcInsert addPerson;
+
+    @Autowired
+    public PersonDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+
+        this.addPerson = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("db_user")
+                .usingGeneratedKeyColumns("id");//指定需要数据库自动生成主键的列名
+    }
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
@@ -35,7 +48,29 @@ public class PersonDao {
         eventPublisher.publishEvent(new MyTransactionEvent("我是个与事务相关的事件"));
 
         String sql = "INSERT INTO db_user(user_name,age) values (?, ?)";
-        return jdbcTemplate.update(sql, person.getName(), person.getAge());
+        return jdbcTemplate.update(sql, person.getUserName(), person.getAge());
+    }
+
+    /**
+     * 使用SimpleJdbcInsert来插入数据，并返回自动生成的id
+     * 介绍：SimpleJdbcInsert利用JDBC驱动所提供的数据库元数据的特性来简化操作配置
+     *
+     * @param person
+     * @return
+     */
+    public Person add(Person person) {
+        SqlParameterSource parameterSource = null;
+
+        //方式一：bean，字段要相对应，否则传参是null
+        parameterSource = new BeanPropertySqlParameterSource(person);
+
+        //方式二：map
+//        parameterSource = new MapSqlParameterSource("user_name", person.getUserName())
+//                .addValue("age", person.getAge());
+
+        Number key = addPerson.executeAndReturnKey(parameterSource);
+        person.setId(key.intValue());
+        return person;
     }
 
     public Person getById(Integer id) {
@@ -47,7 +82,7 @@ public class PersonDao {
                 person = new Person();
                 person.setId(rs.getInt("id"));
                 person.setAge(rs.getInt("age"));
-                person.setName(rs.getString("user_name"));
+                person.setUserName(rs.getString("user_name"));
                 return person;
             }
         };

@@ -28,7 +28,7 @@ public class PersonService {
         int result = 0;
         Person person = new Person();
         String uuid = UUID.randomUUID().toString().substring(0, 5);
-        person.setName(uuid);
+        person.setUserName(uuid);
         person.setAge(16);
         result = personDao.insert(person);
         return result;
