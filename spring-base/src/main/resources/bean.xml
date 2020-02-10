@@ -53,9 +53,9 @@
         </aop:aspect>
     </aop:config>
 
-    <!--初始化数据库 TODO -->
-    <!--<jdbc:initialize-database data-source="dataSource" ignore-failures="DROPS" enabled="#{systemEnvironment.initDatabase?:true}">-->
-        <!--<jdbc:script location="classpath:sql/db_user.sql"/>-->
-    <!--</jdbc:initialize-database>-->
+    <!--初始化数据库 当设置环境变量 init_database=true时会执行 -->
+    <jdbc:initialize-database data-source="dataSource" ignore-failures="DROPS" enabled="#{systemProperties['init_database']?:false}">
+        <jdbc:script location="classpath*:sql/db_user.sql"/>
+    </jdbc:initialize-database>
 
 </beans>

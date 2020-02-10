@@ -79,6 +79,14 @@ public class AnnotationTest {
     @Test
     public void resolveValue() {
         String str = "#{'os.name=${os.name}'}\njdbc.url=${jdbc.url}\n算术:#{12+35}\n#{'fruit.name='+fruit.name}\n${test.one} ${test.two}";
+        str = new StringBuilder("#{'os.name=${os.name}'}\n")
+                .append("jdbc.url=${jdbc.url}\n")
+                .append("算术:#{12+35}\n")
+                .append("#{'fruitFromAnnotation.name='+fruitFromAnnotation.name}\n")
+                .append("${test.one} ${test.two}\n")
+                .append("#{systemEnvironment['user.dir']}\n")
+                .append("#{systemProperties['user.dir']}\n")
+                .toString();
 
         //使用beanFactory解析属性中的占位符
         System.out.println(applicationContext.getBeanFactory().resolveEmbeddedValue(str));
