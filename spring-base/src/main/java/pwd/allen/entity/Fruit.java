@@ -1,6 +1,8 @@
 package pwd.allen.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.SmartInitializingSingleton;
@@ -30,6 +32,8 @@ import java.util.Date;
  * @create 2018-08-11 21:05
  **/
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Fruit implements InitializingBean, DisposableBean, SmartInitializingSingleton, SmartLifecycle {
 
     private String name;

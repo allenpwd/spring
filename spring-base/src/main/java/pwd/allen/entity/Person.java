@@ -30,7 +30,4 @@ public class Person implements Serializable {
     @Qualifier("fruit")
     @Autowired
     private Fruit fruit;
-
-    @Autowired
-    private Order order;
 }

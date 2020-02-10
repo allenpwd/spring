@@ -79,6 +79,11 @@ public class SPELTest {
         System.out.println(map);
         map.put("age", 12);
         System.out.println(map);
+
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(12);
+        int i = 11;
+        list.add(i);
     }
 
 }

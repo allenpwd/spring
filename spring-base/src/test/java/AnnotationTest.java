@@ -12,6 +12,7 @@ import pwd.allen.aop.MyAspect;
 import pwd.allen.config.AOPConfig;
 import pwd.allen.config.MainConfig;
 import pwd.allen.entity.Fruit;
+import pwd.allen.entity.Order;
 import pwd.allen.entity.Person;
 import pwd.allen.service.LookUpService;
 import pwd.allen.service.MyService;
@@ -37,8 +38,14 @@ public class AnnotationTest {
     public void testOne() {
         //如果有多个Fruit实例，获取标注了primary=true的那个
         Fruit fruit = (Fruit) applicationContext.getBean(Fruit.class);
+        System.out.println(fruit);
+
         Person person = applicationContext.getBean(Person.class);
         System.out.println(person);
+
+        Order order = applicationContext.getBean(Order.class);
+        System.out.println(order);
+        System.out.println(applicationContext.getBean("&myFactoryBean"));
 
         /** test transaction aop begin **/
 //        PersonService personService = applicationContext.getBean(PersonService.class);
@@ -78,8 +85,7 @@ public class AnnotationTest {
 
     @Test
     public void resolveValue() {
-        String str = "#{'os.name=${os.name}'}\njdbc.url=${jdbc.url}\n算术:#{12+35}\n#{'fruit.name='+fruit.name}\n${test.one} ${test.two}";
-        str = new StringBuilder("#{'os.name=${os.name}'}\n")
+        String str = new StringBuilder("#{'os.name=${os.name}'}\n")
                 .append("jdbc.url=${jdbc.url}\n")
                 .append("算术:#{12+35}\n")
                 .append("#{'fruitFromAnnotation.name='+fruitFromAnnotation.name}\n")

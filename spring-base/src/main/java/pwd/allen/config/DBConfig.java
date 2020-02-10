@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -46,5 +47,16 @@ public class DBConfig {
     @Bean
     public PlatformTransactionManager dataSourceTransactionManager(DataSource dataSource) throws Exception {
         return new DataSourceTransactionManager(dataSource);
+    }
+
+    /**
+     * 异常转义器的后置处理器：会自动查找所有的异常转义器(实现 Persistenceexception Translator接口的
+     * bean),并且拦截所有标记为@ Repository注解的bean,通过代理来拦截异常,然后通过 Persisten
+     * ceexception Translator将DAO层异常转义后的异常抛出。
+     * @return
+     */
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor persistenceExceptionTranslationPostProcessor() {
+        return new PersistenceExceptionTranslationPostProcessor();
     }
 }

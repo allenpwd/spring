@@ -36,6 +36,25 @@
             <artifactId>druid</artifactId>
             <version>1.1.20</version>
         </dependency>
+
+        <!--xml解析工具-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-oxm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.castor</groupId>
+            <artifactId>castor</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <!--引入的原因是报错ClassNotFoundException: org.apache.xml.serialize.XMLSerializer-->
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.9.1</version>
+        </dependency>
+
     </dependencies>
 
 </project>
