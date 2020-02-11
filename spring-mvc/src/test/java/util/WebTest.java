@@ -14,6 +14,8 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.support.RequestContextUtils;
+import org.springframework.web.servlet.*;
 
 /**
  * 使用 {@link MockHttpServletRequest}和 {@link MockHttpSession} 测试 request和session的bean
@@ -30,13 +32,14 @@ public class WebTest {
     static class TestConfig {
         @Data
         static class TestEntity {
+            //可以使用spel表达式读取request
             @Value("#{request.getParameter('name')}")
             private String name;
             @Value("#{request.getAttribute('age')}")
             private Integer age;
         }
 
-        //region request作用域的bean，可以使用spel表达式读取request
+        //region request作用域的bean
 //        @Bean
 //        @Scope(WebApplicationContext.SCOPE_REQUEST)
 //        public TestEntity fruitTest(HttpServletRequest request) {
@@ -67,5 +70,14 @@ public class WebTest {
 
         TestConfig.TestEntity testEntity = applicationContext.getBean(TestConfig.TestEntity.class);
         System.out.println(testEntity);
+    }
+
+    /**
+     * 容器默认绑定key为 {@link DispatcherServlet#WEB_APPLICATION_CONTEXT_ATTRIBUTE}
+     */
+    @Test
+    public void context() {
+        WebApplicationContext webApplicationContext = RequestContextUtils.findWebApplicationContext(request);
+        System.out.println(webApplicationContext == applicationContext);
     }
 }

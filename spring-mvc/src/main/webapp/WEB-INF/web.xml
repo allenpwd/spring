@@ -21,13 +21,14 @@
   <servlet>
     <servlet-name>dispatcherServlet</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <!--使用注解配置类方式配置spring mvc的上下文，如果指定，则默认为xml方式，xml配置文件路径为：<servlet-name>-servlet.xml-->
+    <!--使用注解配置类方式配置spring mvc的上下文，如果没有指定，则默认为xml方式，xml配置文件路径为：<servlet-name>-servlet.xml-->
     <init-param>
       <param-name>contextClass</param-name>
       <param-value>
         org.springframework.web.context.support.AnnotationConfigWebApplicationContext
       </param-value>
     </init-param>
+    <!--多个用逗号分隔-->
     <init-param>
       <param-name>contextConfigLocation</param-name>
       <param-value>pwd.allen.config.MvcConfig</param-value>

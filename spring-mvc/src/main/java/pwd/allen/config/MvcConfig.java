@@ -1,7 +1,5 @@
 package pwd.allen.config;
 
-import com.alibaba.druid.support.http.StatViewServlet;
-import com.alibaba.druid.support.http.WebStatFilter;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.google.code.kaptcha.util.Config;
 import org.springframework.context.annotation.Bean;
@@ -10,34 +8,35 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
-import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
-import pwd.allen.filter.MyFilter;
+import org.springframework.web.servlet.support.*;
+import org.springframework.web.util.UrlPathHelper;
+import pwd.allen.interceptor.MyInterceptor;
 
-import javax.servlet.*;
 import java.io.IOException;
 
 /**
  * spring MVC配置类
  *
- * WebApplicationInitializer：可以看做是Web.xml的替代，在其中可以添加servlet，listener等，在加载Web项目的时候会加载这个接口实现类
- * 	原理：SpringServletContainerInitializer通过SPI机制在web容器启动时被实例化并调用，
- * 	调用的结果就是得到WebApplicationInitializer子类，逐个实例化并调用他们的onStartup方法
- * 	@see org.springframework.web.SpringServletContainerInitializer
- * 	@see javax.servlet.ServletContainerInitializer
+ * 容器配置的方式：
+ * 	1）基于web.xml
+ * 	2）基于java配置类：继承 {@link AbstractAnnotationConfigDispatcherServletInitializer} 设置根容器和子容器的配置类、servletMappings等
+ * 	3）基于xml配置：继承 {@link AbstractDispatcherServletInitializer}
  *
  */
 @Configuration
 @ComponentScan(basePackages="pwd.allen.controller")
 @Import({AOPConfig.class})//把AOP配置放到spring mvc容器里，不然自定义的AOP在controller层不起效
-@EnableWebMvc
-public class MvcConfig extends WebMvcConfigurerAdapter implements WebApplicationInitializer {
+@EnableWebMvc//等价于xml配置中的<mvc:annotation-driven />
+public class MvcConfig extends WebMvcConfigurerAdapter {
 
+	/**
+	 * 配置视图解析器
+	 * @return
+	 */
 	@Bean
 	public ViewResolver getViewResolver(){
 		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
@@ -57,6 +56,34 @@ public class MvcConfig extends WebMvcConfigurerAdapter implements WebApplication
 		registry.addResourceHandler("/static/**").addResourceLocations("/static/");
 	}
 
+	@Override
+	public void configurePathMatch(PathMatchConfigurer configurer) {
+		UrlPathHelper urlPathHelper = new UrlPathHelper();
+		//开启 matrix-variables 特性，默认为true不开启
+		urlPathHelper.setRemoveSemicolonContent(false);
+		configurer.setUrlPathHelper(urlPathHelper);
+
+		super.configurePathMatch(configurer);
+	}
+
+	/**
+	 * TODO 网上说可以在这里处理跨域
+	 * @param registry
+	 */
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		super.addCorsMappings(registry);
+	}
+
+	/**
+	 * 添加拦截器
+	 * @param registry
+	 */
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new MyInterceptor());
+	}
+
 	/**
 	 * 配置验证码生产工具
 	 * @return
@@ -70,29 +97,4 @@ public class MvcConfig extends WebMvcConfigurerAdapter implements WebApplication
 		return kaptcha;
 	}
 
-
-	/**
-	 * 将在web容器加载时被调用，可以替代web.xml的功能
-	 * @param servletContext
-	 * @throws ServletException
-	 */
-	@Override
-	public void onStartup(ServletContext servletContext) throws ServletException {
-
-		//region 配置druid的监控功能，springboot可以使用 ServletRegistrationBean 和 FilterRegistrationBean
-		//配置DruidDataSource的bean的时候需要指明initMethod="init"使之初始化，否则要第一次sql请求才能看到数据源监控数据
-		ServletRegistration.Dynamic dynamic = servletContext.addServlet("statViewServlet", StatViewServlet.class);
-		dynamic.setInitParameter("loginUsername", "druid");
-		dynamic.setInitParameter("loginPassword", "123456");
-		dynamic.setInitParameter("resetEnable", "false");
-		dynamic.addMapping("/druid/*");
-
-		FilterRegistration.Dynamic filterDynamic = servletContext.addFilter("webStatFilter", WebStatFilter.class);
-		filterDynamic.setInitParameter("exclusions", "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*");
-		filterDynamic.addMappingForUrlPatterns(null, false, "/*");
-		//endregion
-
-		//添加自定义的过滤器
-		servletContext.addFilter("myFilter", MyFilter.class).addMappingForUrlPatterns(null, false, "/person/*");
-	}
 }

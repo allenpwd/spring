@@ -92,7 +92,7 @@ public class PersonDao {
 //        return jdbcTemplate.queryForObject(sql, new Object[]{id}, rowMapper);
 
         //另一种方法：封装成NamedParameterJdbcTemplate，可以使用命名参数符号，还可以包装javaBean来作为参数来源
-        String sql = "select * from db_user where ids=:id";
+        String sql = "select * from db_user where id=:id";
         Person person = new Person();
         person.setId(id);
         return new NamedParameterJdbcTemplate(jdbcTemplate)

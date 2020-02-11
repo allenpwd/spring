@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.ConfigurableMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.support.RequestContextUtils;
 import pwd.allen.config.AOPConfig;
 import pwd.allen.config.MainConfig;
 import pwd.allen.config.MvcConfig;
@@ -47,6 +48,10 @@ public class MockMvcTest {
     @Autowired
     private WebApplicationContext wac;
 
+    /**
+     * 测试get请求
+     * @throws Exception
+     */
     @Test
     public void mockGet() throws Exception {
         MockMvc mockMvc = null;
@@ -97,4 +102,5 @@ public class MockMvcTest {
             e.printStackTrace();
         }
     }
+
 }

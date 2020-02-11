@@ -10,7 +10,7 @@
     <!--会自动注册两个bean，分别为DefaultAnnotationHandlerMapping和AnnotationMethodHandlerAdapter。-->
     <!--是springmvc为@controller分发请求所必须的。-->
     <!--除了注册了这两个bean，还提供了很多支持，其中一项就提到了读写JSON的支持（Jackson）-->
-    <mvc:annotation-driven/>
+    <mvc:annotation-driven enable-matrix-variables="true"/>
 
     <context:property-placeholder location="classpath:kaptcha.properties"/>
 

@@ -40,7 +40,7 @@
             <AppenderRef ref="console"/>
             <AppenderRef ref="rollingFile"/>
         </Logger>
-        <Logger name="org.springframework.web.servlet" additivity="false" level="debug">
+        <Logger name="org.springframework.web.servlet" additivity="false" level="info">
             <AppenderRef ref="console"/>
             <AppenderRef ref="rollingFile"/>
         </Logger>

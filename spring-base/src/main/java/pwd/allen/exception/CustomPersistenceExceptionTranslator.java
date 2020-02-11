@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 /**
  *  自定义异常转义器
+ * @see org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor
  *
  * @author 门那粒沙
  * @create 2020-02-10 10:37
