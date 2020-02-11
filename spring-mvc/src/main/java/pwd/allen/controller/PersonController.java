@@ -23,20 +23,13 @@ public class PersonController {
     private PersonService personService;
 
     /**
-     * @MatrixVariable 矩阵变量，每个变量用;分隔，多个值用,分隔；如/get/12;app=WeiBo;ids=1,2
-     *
-     * 注意：默认这个功能没开启，开启方式：
-     *  1）xml方式：<mvc:annotation-driven enable-matrix-variables="true"/>
-     *  2）注解配置方式：?.setRemoveSemicolonContent(false)，?可以是RequestMappingHandlerMapping
-     *
      * @param id
-     * @param matrixVars
      * @return
      */
     @MyAnnotation
     @RequestMapping("get/{id}")
-    public Person getById(@PathVariable("id") Integer id, @MatrixVariable MultiValueMap matrixVars) {
-        log.info("matrixVariable：{}", matrixVars);
+    public Person getById(@PathVariable("id") Integer id) {
+        if (1 == 1) throw new RuntimeException("abc");
         Person person = personService.getById(id);
         return person;
     }

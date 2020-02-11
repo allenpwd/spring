@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,15 +25,12 @@ import java.util.Map;
  * @create 2018-08-12 10:31
  **/
 @RestController
-@RequestMapping("test")
+@RequestMapping("captcha")
 public class CaptchaController {
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     Producer captchaProducer;
-
-    @Autowired
-    private MyService myService;
 
     @RequestMapping("getCaptcha")
     public void getCaptcha(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -59,21 +57,6 @@ public class CaptchaController {
         }
 
         System.out.println("Session 验证码是aasdfa：" + request.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY));
-    }
-
-    @RequestMapping("my")
-    public Object my(HttpServletRequest request, @RequestParam(value = "name", required = false) String name) {
-        myService.printTwo(name);
-        Map<String, String> map = Collections.singletonMap("name", name);
-        return map;
-    }
-
-    @PostMapping("upload")
-    public Object upload(@RequestParam("file") MultipartFile file) {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("size", file.getSize());
-        map.put("originalFilename", file.getOriginalFilename());
-        return map;
     }
 
 }

@@ -30,7 +30,7 @@ import java.io.IOException;
 @Configuration
 @ComponentScan(basePackages="pwd.allen.controller")
 @Import({AOPConfig.class})//把AOP配置放到spring mvc容器里，不然自定义的AOP在controller层不起效
-@EnableWebMvc//等价于xml配置中的<mvc:annotation-driven />
+@EnableWebMvc//等价于xml配置中的<mvc:annotation-driven />，原理：引入WebMvcConfigurationSupport实现
 public class MvcConfig extends WebMvcConfigurerAdapter {
 
 	/**
