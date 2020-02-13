@@ -1,22 +1,18 @@
 package pwd.allen.config;
 
-import com.google.code.kaptcha.impl.DefaultKaptcha;
-import com.google.code.kaptcha.util.Config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.support.PropertiesLoaderUtils;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+import org.springframework.web.servlet.support.AbstractDispatcherServletInitializer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
-import org.springframework.web.servlet.support.*;
 import org.springframework.web.util.UrlPathHelper;
 import pwd.allen.interceptor.MyInterceptor;
-
-import java.io.IOException;
 
 /**
  * spring MVC配置类
@@ -27,9 +23,10 @@ import java.io.IOException;
  * 	3）基于xml配置：继承 {@link AbstractDispatcherServletInitializer}
  *
  */
+@EnableAsync//开启@Async注解异步处理
 @Configuration
 @ComponentScan(basePackages="pwd.allen.controller")
-@Import({AOPConfig.class})//把AOP配置放到spring mvc容器里，不然自定义的AOP在controller层不起效
+@Import({AOPConfig.class, BeanConfig.class})//把AOP配置放到spring mvc容器里，不然自定义的AOP在controller层不起效
 @EnableWebMvc//等价于xml配置中的<mvc:annotation-driven />，原理：引入WebMvcConfigurationSupport实现
 public class MvcConfig extends WebMvcConfigurerAdapter {
 
@@ -85,16 +82,11 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 	}
 
 	/**
-	 * 配置验证码生产工具
-	 * @return
-	 * @throws IOException
+	 * TODO 不知道怎么开启
+	 * @param configurer
 	 */
-	@Bean
-	public DefaultKaptcha kaptcha() throws IOException {
-		DefaultKaptcha kaptcha = new DefaultKaptcha();
-		Config config = new Config(PropertiesLoaderUtils.loadProperties(new ClassPathResource("kaptcha.properties")));
-		kaptcha.setConfig(config);
-		return kaptcha;
+	@Override
+	public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+		super.configureAsyncSupport(configurer);
 	}
-
 }

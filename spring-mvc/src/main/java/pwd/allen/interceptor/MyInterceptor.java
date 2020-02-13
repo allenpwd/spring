@@ -1,7 +1,6 @@
 package pwd.allen.interceptor;
 
 import lombok.extern.log4j.Log4j2;
-import org.aopalliance.intercept.Interceptor;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -35,6 +34,7 @@ public class MyInterceptor implements HandlerInterceptor {
     }
     /**
      * 在视图渲染后执行  一般用来释放资源
+     * 若preHandle返回false，这个方法也不会被执行
      */
     @Override
     public void afterCompletion(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, Exception arg3)

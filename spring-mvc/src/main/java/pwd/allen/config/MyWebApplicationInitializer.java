@@ -39,6 +39,7 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
 
         FilterRegistration.Dynamic filterDynamic = servletContext.addFilter("webStatFilter", WebStatFilter.class);
         filterDynamic.setInitParameter("exclusions", "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*");
+        filterDynamic.setAsyncSupported(true);
         filterDynamic.addMappingForUrlPatterns(null, false, "/*");
         //endregion
 
