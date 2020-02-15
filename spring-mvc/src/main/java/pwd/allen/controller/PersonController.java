@@ -29,7 +29,6 @@ public class PersonController {
     @MyAnnotation
     @RequestMapping("get/{id}")
     public Person getById(@PathVariable("id") Integer id) {
-        if (1 == 1) throw new RuntimeException("abc");
         Person person = personService.getById(id);
         return person;
     }

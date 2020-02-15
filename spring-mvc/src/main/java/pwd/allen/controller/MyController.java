@@ -1,21 +1,22 @@
 package pwd.allen.controller;
 
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.ui.Model;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
-import pwd.allen.service.MyService;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author 门那粒沙
@@ -42,8 +43,9 @@ public class MyController {
      * @param matrixVars
      * @return
      */
-    @RequestMapping("param/{name}")
-    public Object param(@PathVariable String name
+    @CrossOrigin
+    @GetMapping("param/{name}")
+    public ResponseEntity<Map> param(@PathVariable String name
             , @RequestParam(required = false) Integer error
             , Date date
             , @MatrixVariable(pathVar = "name") MultiValueMap matrixVars) {
@@ -61,30 +63,42 @@ public class MyController {
         matrixVars.add("name", name);
         matrixVars.add("error", error);
         matrixVars.add("date", date);
-        return matrixVars.toSingleValueMap();
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .body(matrixVars.toSingleValueMap());
     }
 
     /**
-     * 上传文件
+     * 使用apache的 commons-fileupload方式处理上传文件
+     *  需要引入commons-fileupload.jar并注入 {@link org.springframework.web.multipart.commons.CommonsMultipartResolver}
+     *  MultipartResolver：{@link org.springframework.web.multipart.commons.CommonsMultipartResolver}
+     *  MultipartHttpServletRequest：{@link org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest}
      *
-     * 需要启用MultipartResolver
+     * 另一种上传方式：
+     * Servlet3.0标准的上传方式
+     *  需要配置multipart-config
+     *  MultipartResolver：{@link org.springframework.web.multipart.support.StandardServletMultipartResolver}
+     *  MultipartHttpServletRequest：{@link org.springframework.web.multipart.support.StandardMultipartHttpServletRequest}
      *
      * @param file
      * @return
      */
     @PostMapping("upload")
-    public Object upload(@RequestParam("file") MultipartFile file) {
+    public Object upload(MultipartHttpServletRequest request, @RequestParam("file") MultipartFile file) {
+        MultiValueMap<String, MultipartFile> multiFileMap = request.getMultiFileMap();
         HashMap<String, Object> map = new HashMap<>();
         map.put("size", file.getSize());
         map.put("originalFilename", file.getOriginalFilename());
+//        file.transferTo(new File());//这个方法只能调一次，调过后文件就没了
         return map;
     }
 
     /**
      * 自定义参数类型转换
+     * InitBinder的value属性用于限定要处理的方法参数，如果没有指定则每个参数都需要绑定一次
+     *
      * @param binder
      */
-    @InitBinder
+    @InitBinder("date")
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));

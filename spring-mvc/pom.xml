@@ -65,13 +65,13 @@
         <finalName>pwd-web</finalName>
         <plugins>
             <plugin>
-                <groupId>org.mortbay.jetty</groupId>
+                <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>8.1.16.v20140903</version>
-                <!-- 扫描项目变更的时间间隔，默认为0不扫描 -->
+                <version>9.4.24.v20191120</version>
                 <configuration>
                     <stopPort>8888</stopPort>
                     <stopKey>stop</stopKey>
+                    <!-- 扫描项目变更的时间间隔，默认为0不扫描 -->
                     <scanIntervalSeconds>10</scanIntervalSeconds>
                     <reload>automatic</reload>
                     <webAppConfig>

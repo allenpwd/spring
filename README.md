@@ -37,6 +37,6 @@ spring中是通过ApplicationListener及ApplicationEventMulticaster来进行事�
 - 需开启springmvc对json的读写支持；xml配置时加上<mvc:annotation-driven/>即可
 #### 文件上传问题
 ##### （1）no multi-part configuration has been provided
-原因：需要配置multipartResolver的bean比如CommonsMultipartResolver，此外还要引入commons-upload.jar依赖
+原因：需要配置multipartResolver的bean，如果是CommonsMultipartResolver则还要引入commons-upload.jar依赖
 #### jetty的maven插件运行项目时log4j报数组越界
 处理方法：版本调低，tomcat启动不会有这个问题，贼鸡儿操蛋
