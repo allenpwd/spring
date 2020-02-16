@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 @EnableAsync//开启@Async注解异步处理
 @Configuration
 @ComponentScan(basePackages="pwd.allen.controller")
-@Import({AOPConfig.class, BeanConfig.class})//把AOP配置放到spring mvc容器里，不然自定义的AOP在controller层不起效
+@Import({AOPConfig.class, BeanConfig.class, WebSocketConfig.class})//把AOP配置放到spring mvc容器里，不然自定义的AOP在controller层不起效
 @EnableWebMvc//等价于xml配置中的<mvc:annotation-driven />，原理：引入WebMvcConfigurationSupport实现
 public class MvcConfig extends WebMvcConfigurerAdapter {
 

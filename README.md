@@ -30,6 +30,9 @@ spring中是通过ApplicationListener及ApplicationEventMulticaster来进行事�
 - Contextstartedevent:当容器调用 start()方法时,触发该事件。
 - Contextstopevent:当容器调用stop)方法时,触发该事件。
 
+### WebSocket
+可以让Web应用中的客户端和服务端建立全双工通信
+
 ### 问题
 #### Controller加上@ResponseBody请求返回406状态码
 原因：
