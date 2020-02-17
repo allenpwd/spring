@@ -45,5 +45,6 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
 
         //添加自定义的过滤器
         servletContext.addFilter("myFilter", MyFilter.class).addMappingForUrlPatterns(null, false, "/person/*");
+
     }
 }

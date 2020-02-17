@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -61,13 +62,32 @@ public class SimpleWebSocket {
     }
 
     /**
-     * 收到客户端消息后回调
+     * 收到客户端文本消息后回调
      * @param message 客户端发过来的消息
      * @param session 可选参数，当前连接会话
      */
     @OnMessage
-    public void onMessage(String message, Session session) {
+    public void onTestMessage(String message, Session session) {
         log.info("来自客户端的消息：{}", message);
+
+        //群发消息
+        for (SimpleWebSocket webSocket : webSockets) {
+            try {
+                webSocket.sendMessage(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 收到客户端二进制消息后回调
+     * @param message 客户端发过来的消息
+     * @param session 可选参数，当前连接会话
+     */
+    @OnMessage
+    public void onBinaryMessage(ByteBuffer message, Session session) {
+        log.info("来自客户端的消息：{}", message.limit());
 
         //群发消息
         for (SimpleWebSocket webSocket : webSockets) {
@@ -93,5 +113,8 @@ public class SimpleWebSocket {
     public void sendMessage(String message) throws IOException {
         this.session.getBasicRemote().sendText(message);
 //        this.session.getAsyncRemote().sendText(message);
+    }
+    public void sendMessage(ByteBuffer message) throws IOException {
+        this.session.getBasicRemote().sendBinary(message);
     }
 }

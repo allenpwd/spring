@@ -155,4 +155,5 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 		registry.addViewController("page").setViewName("jsp/page");
 	}
 
+
 }

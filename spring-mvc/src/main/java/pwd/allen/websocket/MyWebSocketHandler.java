@@ -1,7 +1,6 @@
 package pwd.allen.websocket;
 
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -20,7 +19,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        log.info("WebSocket有新连接: {}", session.getAttributes());
+        log.info("WebSocket有新连接: {}", session.getUri());
     }
 
     @Override

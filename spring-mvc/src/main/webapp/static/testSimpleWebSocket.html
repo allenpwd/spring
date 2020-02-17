@@ -7,6 +7,8 @@
 <body>
 Welcome<br/>
 <input id="text" type="text"/>
+<input type="checkbox" id="type" checked/>是否文本
+<br/>
 <button onclick="send()">发送消息</button>
 <hr/>
 <button onclick="closeWebSocket()">关闭WebSocket连接</button>
@@ -48,12 +50,27 @@ Welcome<br/>
     }
     function send() {
         var message = document.getElementById('text').value;
-        websocket.send(message);
+        if (document.getElementById('type').checked) {
+            websocket.send(message);
+        } else {
+            websocket.send(new Blob([message], {
+                type: 'text/plain'
+            }));
+        }
     }
     function closeWebSocket() {
         websocket.close();
     }
     window.onunload = closeWebSocket;
+
+    function blob2Str(message, charset) {
+        var reader = new FileReader();
+        if (!charset) charset = 'utf-8';
+        reader.readAsText(message, charset);
+        reader.onload = function (e) {
+
+        }
+    }
 </script>
 
 </html>
