@@ -1,4 +1,4 @@
-package pwd.allen.filter;
+package pwd.allen.web.filter;
 
 import javax.servlet.*;
 import java.io.IOException;

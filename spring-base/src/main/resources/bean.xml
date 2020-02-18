@@ -40,7 +40,7 @@
     -->
     <bean id="myAspect4XML" class="pwd.allen.aop.MyAspect4XML"/>
     <aop:config>
-        <aop:pointcut id="myPointCut" expression="execution(public void pwd.allen.service.My*.*Two(..))"/>
+        <aop:pointcut id="myPointCut" expression="execution(public void pwd.allen.sdfad.My*.*Two(..))"/>
         <aop:pointcut id="myAnnocationPointCut" expression="@annotation(pwd.allen.annotation.MyAnnotation)"/>
         <!--order：定义优先级,值越小优先级越大-->
         <aop:aspect id="aspect" ref="myAspect4XML" order="1">

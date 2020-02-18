@@ -1,16 +1,14 @@
 package util;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Commit;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.test.jdbc.JdbcTestUtils;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import pwd.allen.config.MainConfig;
 import pwd.allen.dao.PersonDao;
@@ -72,6 +70,7 @@ public class DaoTest extends AbstractTransactionalJUnit4SpringContextTests {
      * @throws Exception
      */
     @Test
+    @Ignore
     @Transactional
 //    @Transactional(rollbackFor = Throwable.class, noRollbackFor = SQLException.class) //除了SQLException其他任何异常都回滚
     @Commit//不加这个Spring TestContext会默认回滚；也可以替换成@Rollback(false)

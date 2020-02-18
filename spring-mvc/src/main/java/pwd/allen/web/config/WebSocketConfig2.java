@@ -1,4 +1,4 @@
-package pwd.allen.config;
+package pwd.allen.web.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -7,7 +7,10 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 
 /**
- * 使用欧冠STOMP子协议作为cs通信的通用格式
+ * 使用STOMP子协议作为cs通信的通用格式
+ * 特点：
+ *  多方使用可拓展性强（通过订阅广播自定义）
+ *  STOMP协议为浏览器和server间的通信增加适当的消息语义
  *
  * @author 门那粒沙
  * @create 2020-02-15 23:14

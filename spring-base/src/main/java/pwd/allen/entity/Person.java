@@ -1,6 +1,5 @@
 package pwd.allen.entity;
 
-import com.sun.istack.internal.NotNull;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

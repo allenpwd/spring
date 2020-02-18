@@ -36,7 +36,7 @@
     <!--多个用逗号分隔-->
     <init-param>
       <param-name>contextConfigLocation</param-name>
-      <param-value>pwd.allen.config.MvcConfig</param-value>
+      <param-value>pwd.allen.web.config.MvcConfig</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
     <async-supported>true</async-supported>

@@ -49,7 +49,7 @@ public class MyAspect {
      *
      * 注意：@Pointcut标注的方法返回值必须是void，但试了下是可以的
      */
-    @Pointcut(value = "execution(public void pwd.allen.service.My*.*One(..))")
+    @Pointcut(value = "execution(public void pwd.allen.sdfad.My*.*One(..))")
     public void myPointCut() {}
 
     /**

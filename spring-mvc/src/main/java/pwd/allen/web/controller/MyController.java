@@ -1,6 +1,7 @@
-package pwd.allen.controller;
+package pwd.allen.web.controller;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+import pwd.allen.service.MyService;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -26,6 +28,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("my")
 public class MyController {
+
+    @Autowired
+    private MyService myService;
 
     /**
      * handle方法的入参
@@ -48,7 +53,7 @@ public class MyController {
     public ResponseEntity<Map> param(@PathVariable String name
             , @RequestParam(required = false) Integer error
             , Date date
-            , @MatrixVariable(pathVar = "name") MultiValueMap matrixVars) {
+            , @MatrixVariable(pathVar = "name", required = false) MultiValueMap matrixVars) {
 
         System.out.println(MvcUriComponentsBuilder.fromMappingName("MC#param").arg(0, "pwd").buildAndExpand("abc").toString());
 
@@ -59,12 +64,13 @@ public class MyController {
                 System.out.println(10 / 0);
                 break;
         }
-
-        matrixVars.add("name", name);
-        matrixVars.add("error", error);
-        matrixVars.add("date", date);
+        myService.printThree(name);
+        HashMap map = new HashMap<>(matrixVars);
+        map.put("name", name);
+        map.put("error", error);
+        map.put("date", date);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8)
-                .body(matrixVars.toSingleValueMap());
+                .body(map);
     }
 
     /**

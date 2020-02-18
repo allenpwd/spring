@@ -1,9 +1,9 @@
-package pwd.allen.config;
+package pwd.allen.web.config;
 
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
 import org.springframework.web.WebApplicationInitializer;
-import pwd.allen.filter.MyFilter;
+import pwd.allen.web.filter.MyFilter;
 
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;

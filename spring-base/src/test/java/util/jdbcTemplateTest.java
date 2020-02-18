@@ -3,9 +3,6 @@ package util;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -38,7 +35,6 @@ import pwd.allen.exception.CustomSQLErrorCodeSQLExceptionTranslator;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -213,7 +209,7 @@ public class jdbcTemplateTest {
         System.out.println(Arrays.toString(arr_rel));
 
         //方式二 根据bean（setter方法）或者map创建的 SqlParameterSource[]作为参数
-        sql = "insert into db_user(id,user_name,age) values(:id,:name,:age) " +
+        sql = "insert into db_user(id,user_name,age) values(:id,:userName,:age) " +
                 "on DUPLICATE KEY UPDATE user_name=VALUES(user_name),age=VALUES(age)";
         arr_rel = new NamedParameterJdbcTemplate(jdbcTemplate).batchUpdate(sql, SqlParameterSourceUtils.createBatch(list.toArray()));
         System.out.println(Arrays.toString(arr_rel));

@@ -1,4 +1,4 @@
-package pwd.allen.interceptor;
+package pwd.allen.web.interceptor;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.servlet.HandlerInterceptor;

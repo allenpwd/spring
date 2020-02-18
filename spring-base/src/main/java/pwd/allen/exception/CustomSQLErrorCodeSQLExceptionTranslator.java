@@ -2,7 +2,6 @@ package pwd.allen.exception;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
-import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 

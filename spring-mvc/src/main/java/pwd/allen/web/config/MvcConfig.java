@@ -1,4 +1,4 @@
-package pwd.allen.config;
+package pwd.allen.web.config;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +11,8 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 import org.springframework.web.servlet.support.AbstractDispatcherServletInitializer;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import org.springframework.web.util.UrlPathHelper;
-import pwd.allen.interceptor.MyInterceptor;
+import pwd.allen.config.AOPConfig;
+import pwd.allen.web.interceptor.MyInterceptor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -26,8 +27,8 @@ import java.util.concurrent.TimeUnit;
  */
 @EnableAsync//开启@Async注解异步处理
 @Configuration
-@ComponentScan(basePackages="pwd.allen.controller")
-@Import({AOPConfig.class, BeanConfig.class, WebSocketConfig.class})//把AOP配置放到spring mvc容器里，不然自定义的AOP在controller层不起效
+@ComponentScan(basePackages="pwd.allen.web")
+@Import({AOPConfig.class})//把AOP配置放到spring mvc容器里，不然自定义的AOP在controller层不起效
 @EnableWebMvc//等价于xml配置中的<mvc:annotation-driven />，原理：引入WebMvcConfigurationSupport实现
 public class MvcConfig extends WebMvcConfigurerAdapter {
 
@@ -72,8 +73,8 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 	 */
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/static/**")
-				.addResourceLocations("/static/", "classpath:/static/")//最好路径以/结尾，否则可能404
+		registry.addResourceHandler("/**")
+				.addResourceLocations("/static/", "classpath:/META-INF/resources/")//最好路径以/结尾，否则可能404
 				.setCachePeriod(3600 * 24 * 365) //TODO 这个有什么卵用
 				.setCacheControl(CacheControl.maxAge(1, TimeUnit.HOURS));//静态资源的Cache-Control响应头设置
 	}

@@ -1,4 +1,4 @@
-package pwd.allen.exceptionHandler;
+package pwd.allen.web.exceptionHandler;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,7 +30,8 @@ public class MyExceptionHandler {
      */
     @ExceptionHandler({RuntimeException.class})
     public Object handleError(Exception e) {
-       log.info("【默认的ExceptionHandler】error:{}", e.toString());
+       log.error("【默认的ExceptionHandler】error:{}", e.toString());
+       e.printStackTrace();
        return Collections.singletonMap("error", e.toString());
     }
 }

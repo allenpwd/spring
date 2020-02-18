@@ -1,14 +1,13 @@
-package pwd.allen.controller;
+package pwd.allen.web.controller;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import pwd.allen.annotation.MyAnnotation;
 import pwd.allen.entity.Person;
 import pwd.allen.service.PersonService;
-
-import java.util.Map;
 
 /**
  * @author 门那粒沙

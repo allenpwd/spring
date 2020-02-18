@@ -12,8 +12,6 @@ import pwd.allen.config.MainConfig;
 import pwd.allen.entity.Person;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * 测试spring 的 spel表达式解析器
@@ -58,7 +56,7 @@ public class SPELTest {
         evaluationContext.setVariable("person", person);
         evaluationContext.setVariable("method", StringUtils.class.getDeclaredMethod("isEmpty", Object.class));
         evaluationContext.setRootObject(list);//rootObject可以用#root替代，#root可以省略
-        str = "#{#person.name} #{[0].name} #{#root[0].name} #{#method('a')}";
+        str = "#{#person.userName} #{[0].userName} #{#root[0].userName} #{#method('a')}";
         expression = parser.parseExpression(str, new TemplateParserContext());
         System.out.println(str + "=" + expression.getValue(evaluationContext, String.class));
 
@@ -71,19 +69,6 @@ public class SPELTest {
         str = "#ifExist?:'unknown'";//相当于#ifExist?ifExist:'unknown'
         expression = parser.parseExpression(str);
         System.out.println(str + "=" + expression.getValue());
-    }
-
-    @Test
-    public void test() {
-        Map<String, Object> map = Collections.singletonMap("name", (Object)"asdf");
-        System.out.println(map);
-        map.put("age", 12);
-        System.out.println(map);
-
-        ArrayList<Integer> list = new ArrayList<>();
-        list.add(12);
-        int i = 11;
-        list.add(i);
     }
 
 }

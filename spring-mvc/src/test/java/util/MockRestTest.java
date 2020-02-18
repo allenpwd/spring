@@ -8,6 +8,8 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.client.response.MockRestResponseCreators;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * 模拟请求
@@ -40,6 +42,12 @@ public class MockRestTest {
         System.out.println(hello);
 
         this.mockRestServiceServer.verify();
+    }
+
+    @Test
+    public void testUrl() {
+        UriComponents uriComponents = UriComponentsBuilder.fromUriString("abc/{1}").buildAndExpand("nihao");
+        System.out.println(uriComponents);
     }
 
 }

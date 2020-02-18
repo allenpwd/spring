@@ -1,4 +1,4 @@
-package pwd.allen.config;
+package pwd.allen.web.config;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.google.code.kaptcha.util.Config;
