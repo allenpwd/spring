@@ -102,12 +102,13 @@
             function (frame) {
                 setConnected(true);
                 log('Info: WebSocket connection opened.' + frame);
-                stompClient.subscribe('/topic/control', function (message) {
-                    log('[/topic/control] Received: ' + message.data);
+                stompClient.subscribe('/topic/message', function (message) {
+                    log('[/topic/control] Received: ' + message);
                 });
             },
-            function () {
-                log('连接失败');
+            function (error) {
+                setConnected(false);
+                log('Info: WebSocket connection error：' + error);
             }
         );
     }
@@ -125,8 +126,7 @@
     function echo() {
         if (stompClient != null) {
             var message = $("#message").val();
-            log('Sent: ' + message);
-            stompClient.send('app/control', {}, JSON.stringify({'name': message}));
+            stompClient.send('/app/message', {}, JSON.stringify({'name': message}));
         } else {
             alert('WebSocket connection not established, please connect.');
         }
