@@ -9,6 +9,7 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 import pwd.allen.web.websocket.MyChannelInterceptor;
 
 /**
@@ -38,17 +39,30 @@ public class WebSocketConfig2 extends AbstractWebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         //启用一个简单的基于内存的消息代理，指定服务端广播消息的路径前缀
         //也可以用成其他的传统信息代理，比如rabbitmq activeMq
-        registry.enableSimpleBroker("/topic/");
+        registry.enableSimpleBroker("/topic");
 
         //指定服务端处理WebSocket消息的前缀是/app
         //如果客户端向/app/hello这个地址发送消息，那么服务端通过@MessageMapping(“/hello”)这个注解来接收并处理消息
-        registry.setApplicationDestinationPrefixes("/app/");
+        registry.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.setInterceptors(myChannelInterceptor());
     }
+
+
+    @Override
+    public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
+        //理论上Web Socket消息的大小几乎是无限的,但实际上Websocket服务器会施加限制
+        // 如 Tomcat上的5KB和Jety上的64KB。因此, STOMP客户端(如 Javascript webstomp-client等)在16KB边界
+        //处分割较大的 STOMP消息、并将它们作为多个 Websocket消息发送,需要服务器进行缓冲和重新组装。
+        registration.setSendBufferSizeLimit(8888)//配置向客户端发送消息时可以缓存多少数据
+                .setSendTimeLimit(1000 * 10)//配置向客户端发送消息的时间限制，单位毫秒
+                .setMessageSizeLimit(1024 * 128);//配置Stomp最大容量
+    }
+
+
 
     @Bean
     public MyChannelInterceptor myChannelInterceptor() {

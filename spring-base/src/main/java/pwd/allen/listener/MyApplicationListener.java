@@ -43,16 +43,16 @@ public class MyApplicationListener implements ApplicationListener<ApplicationEve
      *
      * @param event
      */
-    @EventListener(classes = {ApplicationEvent.class})
+//    @EventListener(classes = {ApplicationEvent.class})
     public void myEventListenerMethod(ApplicationEvent event) {
         log.debug("@EventListener接收事件：" + event);
     }
 
     /**
-     * 监听requestUrl包含my.do的请求
+     * 监听requestUrl包含my的请求
      * @param event
      */
-    @EventListener(classes = {ServletRequestHandledEvent.class}, condition = "#event.requestUrl.contains('my.do')")
+    @EventListener(classes = {ServletRequestHandledEvent.class}, condition = "#event.requestUrl.contains('my')")
     public void myEventListenerMethodTwo(ServletRequestHandledEvent event) {
         log.debug("@EventListener接收事件：" + event);
     }

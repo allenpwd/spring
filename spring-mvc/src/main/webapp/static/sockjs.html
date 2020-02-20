@@ -33,25 +33,28 @@
     Javascript and reload this page!</h2></noscript>
 <div>
     <div id="connect-container" class="layui-elem-field">
-        <legend>Echo With SockJS！</legend>
+        <legend>chat With SockJS！</legend>
         <div>
-            <input id="target" type="text" class="layui-input" size="40" style="width: 400px" value="/broker"/>
+            <input id="url" type="text" class="layui-input" size="40" style="width: 400px" value="/broker"/>
+        </div>
+        <div>
+            <span>用户名：</span>
+            <input id="name" type="text" class="layui-input" size="10" value="pwd"/>
         </div>
         <div>
             <button id="connect" class="layui-btn layui-btn-normal" onclick="connect();">Connect</button>
             <button id="disconnect" class="layui-btn layui-btn-normal layui-btn-disabled" disabled="disabled"
                     onclick="disconnect();">Disconnect
             </button>
-
         </div>
         <div>
-            <textarea id="message" class="layui-textarea" placeholder="请输入请求的内容" style="width: 350px"></textarea>
+            <textarea id="message" class="layui-textarea" placeholder="请输入请求的内容" style="width: 350px; margin-right: 10px"></textarea><br/>
+            <span>发送给：</span>
+            <input id="target" type="text" class="layui-input" size="10" placeholder="发送给谁"/>
+            <button id="echo" class="layui-btn layui-btn-normal layui-btn-disabled" disabled="disabled" onclick="echo();">Send</button>
         </div>
-        <div>
-            <button id="echo" class="layui-btn layui-btn-normal layui-btn-disabled" disabled="disabled"
-                    onclick="echo();">Echo message
-            </button>
-        </div>
+        <hr/>
+        <div id="content"></div>
     </div>
 </div>
 </body>
@@ -61,11 +64,11 @@
     var stompClient = null;
 
     $(function () {
-        var target = $("#target");
+        var url = $("#url");
         if (window.location.protocol === 'http:') {
-            target.val('http://' + window.location.host + target.val());
+            url.val('http://' + window.location.host + url.val());
         } else {
-            target.val('https://' + window.location.host + target.val());
+            url.val('https://' + window.location.host + url.val());
         }
     });
 
@@ -91,19 +94,26 @@
 
     //连接
     function connect() {
-        var target = $("#target").val();
+        var url = $("#url").val();
+        var user = $("#name").val();
 
         // 建立连接对象（还未发起连接）
-        var socket = new SockJS(target);
+        var socket = new SockJS(url);
         // 获取 STOMP 子协议的客户端对象
         stompClient = Stomp.over(socket);
         stompClient.connect(
-            {},//客户端认证信息
+            {name: user},//客户端认证信息
             function (frame) {
                 setConnected(true);
                 log('Info: WebSocket connection opened.' + frame);
                 stompClient.subscribe('/topic/message', function (message) {
-                    log('[/topic/control] Received: ' + message);
+                    print('[/topic/message] Received: ' + message.body);
+                });
+                stompClient.subscribe('topic/' + user, function (message) {
+                    print('[topic/' + user + '] Received: ' + message.body);
+                });
+                stompClient.subscribe('user/resp', function (message) {
+                    print('[user/resp] Received: ' + message.body);
                 });
             },
             function (error) {
@@ -126,14 +136,28 @@
     function echo() {
         if (stompClient != null) {
             var message = $("#message").val();
-            stompClient.send('/app/message', {}, JSON.stringify({'name': message}));
+            var target = $("#target").val();
+            var headers = {user: $("#name").val()};
+            var destination = '/app/resp';//发送给自己
+            if (target == 'all') {//广播
+                destination = '/app/broadcast';
+                headers.target = target;
+            } else if (target != null && target != '') {//发送给指定的人
+                destination = '/app/chat';
+                headers.target = target;
+            }
+            stompClient.send(destination, headers, message);
         } else {
             alert('WebSocket connection not established, please connect.');
         }
     }
 
     //日志输出
-    function log(message) {
+    function log (message) {
         console.debug(message);
+    }
+
+    function print (message) {
+        $("#content").append("<p>" + message + "</p>");
     }
 </script>
