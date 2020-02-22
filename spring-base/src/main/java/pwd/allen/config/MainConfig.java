@@ -1,6 +1,8 @@
 package pwd.allen.config;
 
+import org.springframework.beans.PropertyEditorRegistrar;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.CustomEditorConfigurer;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -10,6 +12,7 @@ import pwd.allen.entity.Fruit;
 import pwd.allen.importSelector.MyImportSelector;
 import pwd.allen.service.MyService;
 
+import java.util.Arrays;
 import java.util.Date;
 
 //默认的profile是default，若没有设置profile则该配置类被激活
@@ -53,5 +56,20 @@ public class MainConfig {
         //指定类路径message目录下test这个资源包
         messageSource.setBasename("message.test");
         return messageSource;
+    }
+
+    /**
+     *注册自定义的PropertyEditor，只对当前spring容器有效
+     * 原理：实现了BeanFactoryPostProcessor，会在bean工厂初始化时添加进beanFactory
+     *
+     * @return
+     */
+    @Bean
+    public CustomEditorConfigurer customEditorConfigurer() {
+        MyPropertyEditorRegistrar propertyEditorRegistrar = new MyPropertyEditorRegistrar();
+
+        CustomEditorConfigurer customEditorConfigurer = new CustomEditorConfigurer();
+        customEditorConfigurer.setPropertyEditorRegistrars(new PropertyEditorRegistrar[]{propertyEditorRegistrar});
+        return customEditorConfigurer;
     }
 }

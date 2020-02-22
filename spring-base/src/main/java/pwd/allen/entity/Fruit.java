@@ -39,6 +39,7 @@ public class Fruit implements InitializingBean, DisposableBean, SmartInitializin
     private String name;
     @Value("12")
     private Float price;
+    @Value("2020-01-13")
     private Date createAt;
 
     public void init() {

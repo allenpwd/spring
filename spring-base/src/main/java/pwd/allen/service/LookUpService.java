@@ -13,8 +13,8 @@ public abstract class LookUpService {
 
     /**
      * spring会通过CGLIB重新生成子类，重新Lookup指定的方法，动态返回bean对象，若指定的bean不是单例，则每次调用返回的都是不同的
-     *
      * xml配置方式：lookup-method
+     * 常用场景：单例引用非单例
      *
      * 注意：由于使用cglib生成子类的方式，类不能是final，Lookup注释的方法也不能加final
      *

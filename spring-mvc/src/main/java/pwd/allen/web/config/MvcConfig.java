@@ -1,5 +1,8 @@
 package pwd.allen.web.config;
 
+import org.springframework.beans.PropertyEditorRegistrar;
+import org.springframework.beans.factory.config.CustomEditorConfigurer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -12,6 +15,7 @@ import org.springframework.web.servlet.support.AbstractDispatcherServletInitiali
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import org.springframework.web.util.UrlPathHelper;
 import pwd.allen.config.AOPConfig;
+import pwd.allen.config.MyPropertyEditorRegistrar;
 import pwd.allen.web.interceptor.MyInterceptor;
 
 import java.util.concurrent.TimeUnit;
@@ -155,6 +159,5 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 	public void addViewControllers(ViewControllerRegistry registry) {
 		registry.addViewController("page").setViewName("jsp/page");
 	}
-
 
 }

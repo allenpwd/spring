@@ -27,6 +27,10 @@ public class MyService implements EmbeddedValueResolverAware {
 
     /**
      * @Resource JSR-250注解，name属性指定要注入的bean的名称，若name没有指定，则默认为字段名称（标注在字段上）、或者方法传参的参数名（标注在setter方法上）
+     *
+     * @Resource 和 @Autowired的区别：
+     *  注入List<Fruit>类型的属性时，@Resource会注入指定name的list类型的bean；@Autowired会把所有类型为Fruit的bean组成List返回
+     *
      * @see org.springframework.context.annotation.CommonAnnotationBeanPostProcessor
      */
     @Resource(name = "fruitFromAnnotation")
