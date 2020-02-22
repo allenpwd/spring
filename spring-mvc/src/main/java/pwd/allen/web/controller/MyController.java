@@ -99,7 +99,7 @@ public class MyController {
     }
 
     /**
-     * 自定义参数类型转换
+     * 使用PropertyEditor自定义参数类型转换，只对当前Controller有效
      * InitBinder的value属性用于限定要处理的方法参数，如果没有指定则每个参数都需要绑定一次
      *
      * @param binder

@@ -47,7 +47,7 @@
         </dependency>
 
         <!--
-          引入这个spring mvc才能正常处理json
+          引入这个spring mvc才能正常处理json，源码可以看：WebMvcConfigurationSupport#requestMappingHandlerAdapter
           遇到的问题：测试controller返回json结果，返回406
         -->
         <dependency>

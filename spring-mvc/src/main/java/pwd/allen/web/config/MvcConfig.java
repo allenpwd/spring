@@ -1,8 +1,5 @@
 package pwd.allen.web.config;
 
-import org.springframework.beans.PropertyEditorRegistrar;
-import org.springframework.beans.factory.config.CustomEditorConfigurer;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -15,13 +12,16 @@ import org.springframework.web.servlet.support.AbstractDispatcherServletInitiali
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import org.springframework.web.util.UrlPathHelper;
 import pwd.allen.config.AOPConfig;
-import pwd.allen.config.MyPropertyEditorRegistrar;
+import pwd.allen.web.converter.StringToDateConverter;
 import pwd.allen.web.interceptor.MyInterceptor;
 
 import java.util.concurrent.TimeUnit;
 
 /**
  * spring MVC配置类
+ * @see WebMvcConfigurationSupport
+ * @see WebMvcConfigurerAdapter 用于在WebMvcConfigurationSupport基础上定制
+ * @see DelegatingWebMvcConfiguration WebMvcConfigurationSupport子类，检测并集成WebMvcConfigurerAdapter
  *
  * 容器配置的方式：
  * 	1）基于web.xml
@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @ComponentScan(basePackages="pwd.allen.web")
 @Import({AOPConfig.class})//把AOP配置放到spring mvc容器里，不然自定义的AOP在controller层不起效
-@EnableWebMvc//等价于xml配置中的<mvc:annotation-driven />，原理：引入WebMvcConfigurationSupport实现
+@EnableWebMvc//等价于xml配置中的<mvc:annotation-driven />，原理：引入 DelegatingWebMvcConfiguration 实现
 public class MvcConfig extends WebMvcConfigurerAdapter {
 
 	//region 配置视图解析器
@@ -125,12 +125,14 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 	}
 
 	/**
-	 * 配置类型转换
+	 * 配置类型转换全局
 	 * @param registry
 	 */
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
-		super.addFormatters(registry);
+		StringToDateConverter converter = new StringToDateConverter();
+		converter.setDatePattern("yyyy-MM-dd");
+		registry.addConverter(converter);
 	}
 
 	/**

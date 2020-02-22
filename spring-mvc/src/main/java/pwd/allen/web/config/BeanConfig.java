@@ -4,6 +4,7 @@ import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.google.code.kaptcha.util.Config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ConversionServiceFactoryBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.web.multipart.MultipartResolver;
@@ -42,4 +43,5 @@ public class BeanConfig {
         multipartResolver.setMaxUploadSize(1024 * 20);	//20kb
         return multipartResolver;
     }
+
 }
