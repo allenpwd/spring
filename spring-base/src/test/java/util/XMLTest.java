@@ -3,7 +3,10 @@ package util;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.oxm.castor.CastorMarshaller;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import pwd.allen.entity.Customer;
 import pwd.allen.entity.Order;
 
@@ -36,6 +39,21 @@ public class XMLTest {
         customer = new Customer("测试xml序列化", new Date(), list);
     }
 
+    @Configuration
+    static class TestConfig {
+
+        @Bean
+        public Jaxb2Marshaller jaxb2Marshaller() {
+            Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+            marshaller.setClassesToBeBound(Customer.class);
+            return marshaller;
+        }
+
+        @Bean CastorMarshaller castorMarshaller() {
+            return new CastorMarshaller();
+        }
+    }
+
     /**
      * 测试使用CastorMarshaller进行xml序列化
      * @throws IOException
@@ -43,7 +61,7 @@ public class XMLTest {
     @Test
     public void castorMarshaller() throws IOException {
         //需要放在spring容器中经后置处理器处理以便初始化
-        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(CastorMarshaller.class);
+        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(TestConfig.class);
         CastorMarshaller castorMarshaller = applicationContext.getBean(CastorMarshaller.class);
 
         //序列化
@@ -58,7 +76,28 @@ public class XMLTest {
     }
 
     /**
-     * 使用JAXB进行xml序列化
+     * 测试使用jaxb2Marshaller进行xml序列化，实体类需要注解
+     * @throws IOException
+     */
+    @Test
+    public void jaxb2Marshaller() throws IOException {
+        //需要放在spring容器中经后置处理器处理以便初始化
+        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(TestConfig.class);
+        Jaxb2Marshaller castorMarshaller = applicationContext.getBean(Jaxb2Marshaller.class);
+
+        //序列化
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        castorMarshaller.marshal(customer, new StreamResult(outputStream));
+        String xml = new String(outputStream.toByteArray());
+        System.out.println(xml);
+
+        //反序列化
+        Customer customerTwo = (Customer) castorMarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(outputStream.toByteArray())));
+        System.out.println(customerTwo);
+    }
+
+    /**
+     * 使用jdk的JAXB进行xml序列化，需要在实体类上添加注解
      * @throws JAXBException
      */
     @Test
