@@ -7,8 +7,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.oxm.castor.CastorMarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.oxm.xstream.XStreamMarshaller;
 import pwd.allen.entity.Customer;
 import pwd.allen.entity.Order;
+import pwd.allen.entity.Person;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -19,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -115,5 +118,51 @@ public class XMLTest {
         Unmarshaller unmarshaller = context.createUnmarshaller();
         Customer customerTwo = (Customer) unmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(outputStream.toByteArray())));
         System.out.println(customerTwo);
+    }
+
+    /**
+     * 使用XStreamMarshaller
+     * @throws JAXBException
+     */
+    @Test
+    public void xstream() throws JAXBException, IOException {
+        //设置xml反序列化工具
+        XStreamMarshaller marshaller = new XStreamMarshaller();
+        //customer元素映射成Customer类
+        marshaller.setAliases(Collections.singletonMap("customer", Customer.class));
+
+        //序列化
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        marshaller.marshal(customer, new StreamResult(outputStream));
+        String xml = new String(outputStream.toByteArray());
+        System.out.println(xml);
+
+        //反序列化
+        Customer customerTwo = (Customer) marshaller.unmarshal(new StreamSource(new ByteArrayInputStream(outputStream.toByteArray())));
+        System.out.println(customerTwo);
+    }
+
+    /**
+     * 测试使用CastorMarshaller进行xml序列化
+     * @throws IOException
+     */
+    @Test
+    public void castorMarshaller2() throws IOException {
+        Person person = new Person(12, "你好", 23);
+        List<Person> list = Arrays.asList(person);
+
+        CastorMarshaller castorMarshaller = new CastorMarshaller();
+        castorMarshaller.setTargetClass(Person.class);
+        castorMarshaller.afterPropertiesSet();
+
+        //序列化
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        castorMarshaller.marshal(list, new StreamResult(outputStream));
+        String xml = new String(outputStream.toByteArray());
+        System.out.println(xml);
+
+        //反序列化
+        list = (List<Person>) castorMarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(outputStream.toByteArray())));
+        System.out.println(list);
     }
 }

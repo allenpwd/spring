@@ -3,6 +3,8 @@ package util;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.Repeat;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -32,6 +34,7 @@ import pwd.allen.entity.Fruit;
 @RunWith(SpringRunner.class)
 public class SpringTest {
 
+
     /**
      * 上下文
      * （2）若没有指定ContextConfiguration的classes，{@link AnnotationConfigContextLoader} 和 {@link AnnotationConfigWebContextLoader}
@@ -50,10 +53,17 @@ public class SpringTest {
     @Autowired
     private Fruit fruit;
 
+    /**
+     * 加载类路径下csv的资源文件，classpath后的*不能省略
+     */
+    @Value("classpath*:/*.csv")
+    private Resource[] resources;
+
     @Repeat(2)//重复执行，要结合SpringJUnit4ClassRunner才行
     @Test
     public void test() {
         System.out.println(fruit);
+        System.out.println(resources);
     }
 
 }

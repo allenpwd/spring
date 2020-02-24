@@ -25,7 +25,7 @@ public class Person implements Serializable {
 
     @NonNull
     @Value("#{20+6} ")
-    private int age;
+    private Integer age;
 
     @Qualifier("fruit")
     @Autowired

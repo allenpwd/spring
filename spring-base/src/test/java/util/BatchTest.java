@@ -155,6 +155,13 @@ public class BatchTest {
         jobLauncher.run(job1, jobParameters);
     }
 
+    /**
+     * 测试决策器，通过决策器控制步骤执行
+     * @throws JobParametersInvalidException
+     * @throws JobExecutionAlreadyRunningException
+     * @throws JobRestartException
+     * @throws JobInstanceAlreadyCompleteException
+     */
     @Test
     public void decide() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
         JobParameters jobParameters = new JobParametersBuilder()

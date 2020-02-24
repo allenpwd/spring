@@ -4,7 +4,16 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="fruitTest" class="pwd.allen.entity.Fruit" p:name="test">
+    <bean id="fruitTest" class="pwd.allen.entity.Fruit" p:name="test" p:createAt="2020-02-24 00:00:00">
+    </bean>
+
+    <!--自定义yyyy-MM-dd格式的日期字符串给Date类型属性赋值-->
+    <bean id="customEditorConfigurer" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+        <property name="propertyEditorRegistrars">
+            <list>
+                <bean class="pwd.allen.config.MyPropertyEditorRegistrar"/>
+            </list>
+        </property>
     </bean>
 
 </beans>
