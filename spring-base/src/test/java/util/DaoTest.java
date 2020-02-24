@@ -70,14 +70,12 @@ public class DaoTest extends AbstractTransactionalJUnit4SpringContextTests {
      * @throws Exception
      */
     @Test
-    @Ignore
+//    @Ignore
     @Transactional
 //    @Transactional(rollbackFor = Throwable.class, noRollbackFor = SQLException.class) //除了SQLException其他任何异常都回滚
     @Commit//不加这个Spring TestContext会默认回滚；也可以替换成@Rollback(false)
     public void add() throws Exception {
-        Person person = new Person();
-        person.setUserName("奥利给");
-        person.setAge(40);
+        Person person = new Person(null, "奥利给", 40);
         person = personDao.add(person);
         System.out.println(person);
 

@@ -7,31 +7,32 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.flow.Flow;
-import org.springframework.batch.core.job.flow.FlowExecutionStatus;
-import org.springframework.batch.core.job.flow.JobExecutionDecider;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.JobRestartException;
-import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.builder.FlowStepBuilder;
 import org.springframework.batch.core.step.builder.JobStepBuilder;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.core.step.tasklet.TaskletStep;
-import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.PlatformTransactionManager;
+import pwd.allen.batch.MyChunkListener;
+import pwd.allen.batch.MyJobExecutionDecider;
+import pwd.allen.batch.MyJobExecutionListener;
+import pwd.allen.batch.MyTasklet;
 import pwd.allen.config.BatchConfig;
 import pwd.allen.config.DBConfig;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -55,7 +56,10 @@ public class BatchTest {
     private JobRepository jobRepository;
 
     @Autowired
-    private Job job;
+    private PlatformTransactionManager transactionManager;
+
+    @Autowired
+    private Job myJob;
 
     //<editor-fold desc="数据库初始化">
     /**
@@ -82,29 +86,37 @@ public class BatchTest {
                 .addString("date", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()))
                 .toJobParameters();
 
-        //创建第一个步骤
-        TaskletStep step1 = stepBuilderFactory.get("step1").tasklet(new TestTasklet("第一个任务啦")).build();
-        TaskletStep step2 = stepBuilderFactory.get("step2").tasklet(new TestTasklet("第二个任务啦")).build();
-        TaskletStep step3 = stepBuilderFactory.get("step3").tasklet(new TestTasklet("第3个任务啦")).build();
+        //创建tasklet步骤
+        TaskletStep step1 = stepBuilderFactory.get("step1").tasklet(new MyTasklet("第一个任务啦")).build();
+        TaskletStep step2 = stepBuilderFactory.get("step2").tasklet(new MyTasklet("第二个任务啦")).build();
+        //创建一个chunk步骤，为String集合加上前缀
+        TaskletStep step3 = stepBuilderFactory.get("chunkStep")
+                .<String, String>chunk(2)
+                .reader(new ListItemReader<String>(Arrays.asList("a", "b", "c")))
+                .processor(o -> "hello!" + o)
+                .writer(list -> System.out.println("write " + list))
+                .listener(new MyChunkListener())
+                .build();
 
         //创建flow，flow能像job一样组织step，能重用
         Flow flow1 = new FlowBuilder<Flow>("flow1").start(step1)
                 .next(step2)
                 .build();
-        Flow flow2 = new FlowBuilder<Flow>("flow2").start(step3)
-                .build();
 
-        //job包装step
-        Job job2 = jobBuilderFactory.get("job2").start(step3).build();
-        new JobStepBuilder(new StepBuilder("jobStep"))
-                .job(job2)
+        //用job组织step
+        //创建包含job的step，实现子job，即job内嵌job
+        Step jobStep = new JobStepBuilder(new StepBuilder("jobStep"))
+                .job(myJob)
                 .launcher(jobLauncher)
                 .repository(jobRepository)
+                .transactionManager(transactionManager)
+                .build();
         Job job1 = jobBuilderFactory.get("job1")
                 .start(flow1)
-                .on(ExitStatus.COMPLETED.getExitCode()).to(step3)//当返回结果为COMPLETED时走step2
-                .from(step3).on(ExitStatus.COMPLETED.getExitCode()).to(step3)
+                .on(ExitStatus.COMPLETED.getExitCode()).to(step3)//当返回结果为COMPLETED时走step3
+                .from(step3).on(ExitStatus.COMPLETED.getExitCode()).to(jobStep)//当step3结果为COMPLETED时执行 子job
                 .end()
+                .listener(new MyJobExecutionListener())//注册job监听器
                 .build();
 
         //阻塞
@@ -121,9 +133,9 @@ public class BatchTest {
                 .addString("date", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
                 .toJobParameters();
 
-        TaskletStep step1 = stepBuilderFactory.get("step1").tasklet(new TestTasklet("第一个任务啦")).build();
-        TaskletStep step2 = stepBuilderFactory.get("step2").tasklet(new TestTasklet("第二个任务啦")).build();
-        TaskletStep step3 = stepBuilderFactory.get("step3").tasklet(new TestTasklet("第3个任务啦")).build();
+        TaskletStep step1 = stepBuilderFactory.get("step1").tasklet(new MyTasklet("第一个任务啦")).build();
+        TaskletStep step2 = stepBuilderFactory.get("step2").tasklet(new MyTasklet("第二个任务啦")).build();
+        TaskletStep step3 = stepBuilderFactory.get("step3").tasklet(new MyTasklet("第3个任务啦")).build();
 
         //step1和step2串行，但是与step3并行
         Flow flow1 = new FlowBuilder<Flow>("flow1").start(step1)
@@ -150,14 +162,14 @@ public class BatchTest {
                 .addString("decide", "step1")
                 .toJobParameters();
 
-        TaskletStep step1 = stepBuilderFactory.get("step1").tasklet(new TestTasklet("第一个任务啦")).build();
-        TaskletStep step2 = stepBuilderFactory.get("step2").tasklet(new TestTasklet("第二个任务啦")).build();
+        TaskletStep step1 = stepBuilderFactory.get("step1").tasklet(new MyTasklet("第一个任务啦")).build();
+        TaskletStep step2 = stepBuilderFactory.get("step2").tasklet(new MyTasklet("第二个任务啦")).build();
 
         Flow flow1 = new FlowBuilder<Flow>("flow1").start(step1)
                 .next(step2)
                 .build();
 
-        TestJobExecutionDecider executionDecider = new TestJobExecutionDecider();
+        MyJobExecutionDecider executionDecider = new MyJobExecutionDecider();
 
         Job job1 = jobBuilderFactory.get("decideJob")
                 .start(flow1)
@@ -173,53 +185,4 @@ public class BatchTest {
         jobLauncher.run(job1, jobParameters);
     }
 
-    /**
-     * 自定义step的处理程序
-     */
-    public class TestTasklet implements Tasklet {
-
-        private String message;
-
-        private boolean ifThrowError = false;
-
-        public TestTasklet(String message) {
-            this.message = message;
-        }
-
-        public TestTasklet error() {
-            this.ifThrowError = true;
-            return this;
-        }
-
-        @Override
-        public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-            System.out.println(String.format("%s in thread %s ：%s"
-                    , chunkContext.getStepContext().getStepName()
-                    , Thread.currentThread().getName(), message));
-            if (ifThrowError) throw new RuntimeException("啊 我错了");
-            return doExecute(contribution, chunkContext);
-        }
-
-        public RepeatStatus doExecute(StepContribution contribution, ChunkContext chunkContext) {
-            try {
-                Thread.sleep(800);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-//            return RepeatStatus.CONTINUABLE;//会一直重复执行
-            return RepeatStatus.FINISHED;
-        }
-    }
-
-    /**
-     * 自定义决策器
-     */
-    public class TestJobExecutionDecider implements JobExecutionDecider {
-
-        @Override
-        public FlowExecutionStatus decide(JobExecution jobExecution, StepExecution stepExecution) {
-            //简单地把参数中的decide作为返回值
-            return new FlowExecutionStatus(jobExecution.getJobParameters().getString("decide"));
-        }
-    }
 }

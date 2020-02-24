@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author pwd
@@ -29,4 +30,6 @@ public class Person implements Serializable {
     @Qualifier("fruit")
     @Autowired
     private Fruit fruit;
+
+    private Date createAt;
 }
