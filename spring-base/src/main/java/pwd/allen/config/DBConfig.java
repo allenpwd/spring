@@ -28,6 +28,14 @@ import javax.sql.DataSource;
 @Configuration
 public class DBConfig {
 
+    /**
+     * @Value从配置文件中解析url
+     * @see org.springframework.beans.factory.support.AbstractBeanFactory#resolveEmbeddedValue
+     * @param jdbcUrl
+     * @param password
+     * @return
+     * @throws Exception
+     */
     @Bean(initMethod = "init")
     public DruidDataSource dataSource(@Value("${jdbc.url}") String jdbcUrl
             , @Value("${jdbc.password}")String password) throws Exception {
