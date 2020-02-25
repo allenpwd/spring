@@ -7,7 +7,7 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.flow.Flow;
-import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.*;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRepository;
@@ -15,6 +15,8 @@ import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.batch.core.step.builder.JobStepBuilder;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.TaskletStep;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.support.ListItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
@@ -23,24 +25,26 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.PlatformTransactionManager;
-import pwd.allen.batch.MyChunkListener;
-import pwd.allen.batch.MyJobExecutionDecider;
-import pwd.allen.batch.MyJobExecutionListener;
-import pwd.allen.batch.MyTasklet;
+import pwd.allen.batch.*;
 import pwd.allen.config.BatchConfig;
+import pwd.allen.config.BatchConfig2;
 import pwd.allen.config.DBConfig;
+import pwd.allen.entity.Person;
+import pwd.allen.exception.MyException;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author 门那粒沙
  * @create 2020-02-23 14:53
  **/
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {BatchConfig.class, DBConfig.class})
+@ContextConfiguration(classes = {DBConfig.class, BatchConfig.class, BatchConfig2.class})
 public class BatchTest {
 
     @Autowired
@@ -55,11 +59,21 @@ public class BatchTest {
     @Autowired
     private JobRepository jobRepository;
 
+    /**
+     * 这个不是@EnableBatchProcessing自动引入的，需要自己创建
+     * 其中设置的jobRegistry需要通过JobRegistryBeanPostProcessor来注册job，然后才能通过beanName找到job
+     */
+    @Autowired
+    private JobOperator jobOperator;
+
     @Autowired
     private PlatformTransactionManager transactionManager;
 
     @Autowired
     private Job myJob;
+
+    @Autowired
+    private FlatFileItemReader<Person> flatFileItemReader;
 
     //<editor-fold desc="数据库初始化">
     /**
@@ -190,6 +204,64 @@ public class BatchTest {
 
         //阻塞
         jobLauncher.run(job1, jobParameters);
+    }
+
+    /**
+     * 测试失败容忍
+     *  （1）重试：指定需要重试的异常类型，指定重试次数
+     *  （2）跳过：指定需要跳过的异常类型，指定次数上限，跳过后整个chunk除了被跳过的item外，其他item会重新进行ItemProcessor处理
+     */
+    @Test
+    public void retry() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addString("date", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()))
+                .toJobParameters();
+
+        TaskletStep step = stepBuilderFactory.get("step")
+                .<Person, Person> chunk(10)
+                .reader(flatFileItemReader)
+                .processor(new TestItemProcessor())
+                .writer(items -> System.out.println("write : " + items))
+                .faultTolerant()//开启失败容忍
+//                .retry(MyException.class)//遇到MyException则重试
+//                .retryLimit(5)//重试次数
+                .skip(MyException.class)//遇到MyException则跳过
+                .skipLimit(2)//只能跳过一次，第二次遇到该异常则出错
+                .listener(new MySkipListener())//加入一个监听器，监听跳过的过程
+                .build();
+
+        Job job = jobBuilderFactory.get("retryJob")
+                .start(step)
+                .build();
+
+        //阻塞
+        jobLauncher.run(job, jobParameters);
+    }
+
+    @Test
+    public void jobOperator() throws JobParametersInvalidException, JobInstanceAlreadyExistsException, NoSuchJobException, JobExecutionAlreadyRunningException, JobRestartException, JobParametersNotFoundException, JobInstanceAlreadyCompleteException {
+        //打印容器里的job
+        Set<String> jobNames = jobOperator.getJobNames();
+        System.out.println(jobNames);
+
+        //启动myJob
+        jobOperator.startNextInstance(jobNames.iterator().next());
+    }
+
+
+    public class TestItemProcessor implements ItemProcessor<Person, Person> {
+        private int attemptCount = 0;
+        @Override
+        public Person process(Person item) throws Exception {
+            System.out.println("process item " + item.getId());
+            List<Integer> ids = Arrays.asList(102, 106);
+            //模拟数据处理出错，重试3次后成功的场景
+            if (ids.contains(item.getId()) && attemptCount++ < 3) {
+                System.out.println(String.format("fail to process for id:%s attempCount:%s", item.getId(), attemptCount));
+                throw new MyException("dang late go fight!");
+            }
+            return item;
+        }
     }
 
 }

@@ -2,10 +2,19 @@ package pwd.allen.config;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.JobRegistry;
+import org.springframework.batch.core.configuration.ListableJobLocator;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor;
+import org.springframework.batch.core.converter.DefaultJobParametersConverter;
+import org.springframework.batch.core.explore.JobExplorer;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.JobOperator;
+import org.springframework.batch.core.launch.support.SimpleJobOperator;
+import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
@@ -15,11 +24,15 @@ import org.springframework.batch.item.database.support.MySqlPagingQueryProvider;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.MultiResourceItemReader;
+import org.springframework.batch.item.file.MultiResourceItemWriter;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DefaultFieldSetFactory;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.file.transform.FieldSetFactory;
+import org.springframework.batch.item.support.ClassifierCompositeItemWriter;
+import org.springframework.batch.item.support.CompositeItemWriter;
 import org.springframework.batch.item.xml.StaxEventItemReader;
+import org.springframework.batch.item.xml.StaxEventItemWriter;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +45,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.oxm.castor.CastorMarshaller;
 import org.springframework.oxm.xstream.XStreamMarshaller;
+import pwd.allen.batch.MyJobParametersIncrementer;
 import pwd.allen.batch.MyLineAggregator;
 import pwd.allen.batch.MyStepExecutionListener;
 import pwd.allen.entity.Person;
@@ -43,6 +57,7 @@ import java.nio.charset.Charset;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -55,20 +70,42 @@ import java.util.Collections;
 public class BatchConfig {
 
     @Autowired
-    private StepBuilderFactory stepBuilderFactory;
-
-    @Autowired
-    private JobBuilderFactory jobBuilderFactory;
-
-    @Autowired
     private DataSource dataSource;
 
     @Value("classpath*:/*.csv")
     private Resource[] resources;
 
+    @Autowired
+    private StepBuilderFactory stepBuilderFactory;
+    @Autowired
+    private JobBuilderFactory jobBuilderFactory;
+    @Autowired
+    private JobLauncher jobLauncher;
+    @Autowired
+    private JobRepository jobRepository;
+    @Autowired
+    private JobExplorer jobExplorer;
+    @Autowired
+    private JobRegistry jobRegistry;
+
+    @Bean
+    public JobOperator jobOperator() {
+        SimpleJobOperator jobOperator = new SimpleJobOperator();
+
+        jobOperator.setJobLauncher(jobLauncher);
+        //默认的参数转换器支持解析key=value格式
+        jobOperator.setJobParametersConverter(new DefaultJobParametersConverter());
+        jobOperator.setJobRepository(jobRepository);
+        jobOperator.setJobRegistry(jobRegistry);
+        jobOperator.setJobExplorer(jobExplorer);
+
+        return jobOperator;
+    }
+
     @Bean
     public Job myJob(Step step) {
         return jobBuilderFactory.get("myJob")//指定工作名称
+                .incrementer(new MyJobParametersIncrementer())
                 .start(step)
                 .build();
     }
@@ -98,7 +135,12 @@ public class BatchConfig {
                     return item;
                 })
 //                .writer(jdbcBatchItemWriter())//数据插入数据库
-                .writer(flatFileItemWriter())
+//                .writer(flatFileItemWriter())
+//                .writer(staxEventItemWriter())
+//                .writer(compositeItemWriter())
+                .writer(classifierCompositeItemWriter())
+                .stream(flatFileItemWriter())
+                .stream(staxEventItemWriter())
 //                .writer(itemWriter())//打印要写入的数据
                 .listener(myStepExecutionListener)
                 .build();
@@ -244,6 +286,75 @@ public class BatchConfig {
         //设置行聚合器，将记录转成一行
         itemWriter.setLineAggregator(new MyLineAggregator());
         itemWriter.afterPropertiesSet();//自检
+
+        return itemWriter;
+    }
+
+    /**
+     * 写入xml文件
+     *
+     * @return
+     */
+    @Bean
+    @StepScope
+    public StaxEventItemWriter<Person> staxEventItemWriter() throws Exception {
+        StaxEventItemWriter<Person> itemWriter = new StaxEventItemWriter<>();
+        itemWriter.setResource(new FileSystemResource("C:\\Users\\Administrator\\Desktop\\output.xml"));
+
+        itemWriter.setRootTagName("persons");
+
+        //设置xml反序列化工具
+        XStreamMarshaller marshaller = new XStreamMarshaller();
+        //person元素映射成Person类
+        marshaller.setAliases(Collections.singletonMap("person", Person.class));
+
+        itemWriter.setMarshaller(marshaller);
+        itemWriter.afterPropertiesSet();//自检
+
+        return itemWriter;
+    }
+
+    /**
+     * 写入多文件
+     * @return
+     */
+    @Bean
+    @StepScope
+    public CompositeItemWriter<Person> compositeItemWriter() throws Exception {
+        CompositeItemWriter<Person> itemWriter = new CompositeItemWriter<>();
+
+        //委托两个writer，分别是输出json 输出xml
+        itemWriter.setDelegates(Arrays.asList(flatFileItemWriter(), staxEventItemWriter()));
+
+        itemWriter.afterPropertiesSet();
+
+        return itemWriter;
+    }
+
+    /**
+     * 分类写入多文件
+     * 注意：因为classifierCompositeItemWriter没有实现ItemStream，所以它集成的ItemWriter如果实现了ItemStream的话需要在创建job时手动添加到stream
+     *      否则报错：org.springframework.batch.item.WriterNotOpenException: Writer must be open before it can be written to
+     * @return
+     */
+    @Bean
+    @StepScope
+    public ClassifierCompositeItemWriter<Person> classifierCompositeItemWriter() throws Exception {
+        ClassifierCompositeItemWriter<Person> itemWriter = new ClassifierCompositeItemWriter<>();
+
+        //分类器，偶数id输出到json，奇数输出到xml
+        itemWriter.setClassifier(person -> {
+            try {
+                if (person.getId() % 2 == 0) {
+                    return flatFileItemWriter();
+                } else {
+                    return staxEventItemWriter();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        });
 
         return itemWriter;
     }
