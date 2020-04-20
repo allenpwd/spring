@@ -6,6 +6,8 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * 使用Spring提供的低层级WebSocket API实现WebSocket
  * 简单搞一个接收text的
@@ -17,9 +19,14 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @Log4j2
 public class MyWebSocketHandler extends TextWebSocketHandler {
 
+    public static ConcurrentHashMap<String, WebSocketSession> map_session = new ConcurrentHashMap<>();
+
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         log.info("WebSocket有新连接: {}", session.getUri());
+        String token = session.getUri().getQuery();
+        session.getAttributes().put("token", token);
+        map_session.put(token, session);
     }
 
     @Override
