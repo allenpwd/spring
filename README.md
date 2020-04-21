@@ -42,4 +42,4 @@ spring中是通过ApplicationListener及ApplicationEventMulticaster来进行事�
 ##### （1）no multi-part configuration has been provided
 原因：需要配置multipartResolver的bean，如果是CommonsMultipartResolver则还要引入commons-upload.jar依赖
 #### jetty的maven插件运行项目时log4j报数组越界
-处理方法：版本调低，tomcat启动不会有这个问题，贼鸡儿操蛋asdf
+处理方法：版本调低，tomcat启动不会有这个问题，贼鸡儿操蛋
